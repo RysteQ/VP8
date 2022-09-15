@@ -1,4 +1,4 @@
-use std::{ops::Add, vec::Splice};
+
 
 #[derive(Debug, Clone, Copy)]
 enum Opcode {
@@ -33,9 +33,9 @@ pub struct Instruction {
 }
 
 pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
-    let mut to_return: Vec<Instruction>;
+    let mut _to_return: Vec<Instruction>;
 
-    for i in 0..instructions.len() {
+    for _i in 0..instructions.len() {
         // TODO
     }
 
@@ -67,7 +67,7 @@ fn get_opcode(opcode_to_analyze: String) -> Opcode {
         }
     }
 
-    if opcode_to_analyze.ends_with(":") {
+    if opcode_to_analyze.ends_with(':') {
         return Opcode::LABEL;
     }
 
@@ -77,7 +77,7 @@ fn get_opcode(opcode_to_analyze: String) -> Opcode {
 }
 
 fn GetAddressingMode(parameters_to_analyze: String) -> AddressingMode {
-    match parameters_to_analyze.chars().nth(0).unwrap() {
+    match parameters_to_analyze.chars().next().unwrap() {
         '#' => {
             if parameters_to_analyze.len() == 4 {
                 return AddressingMode::Immediate;
