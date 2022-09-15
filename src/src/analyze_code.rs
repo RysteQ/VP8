@@ -1,5 +1,6 @@
 use std::{ops::Add, vec::Splice};
 
+#[derive(Debug, Clone, Copy)]
 enum Opcode {
     ADC, AND, ASL, BCC, BCS, BEQ, BIT, BMI,
     BNE, BPL, BRK, BVC, BVS, CLC, CLD, CLI,
@@ -23,7 +24,7 @@ enum AddressingMode {
     IndirectY
 }
 
-struct Instruction {
+pub struct Instruction {
     opcode: Opcode,
     addressing_mode: AddressingMode,
     value: u16,
@@ -31,17 +32,18 @@ struct Instruction {
     label_name: String
 }
 
-pub fn GetInstructions(instructions: Vec<String>) -> Vec<Instruction> {
+pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
     let mut to_return: Vec<Instruction>;
 
     for i in 0..instructions.len() {
         // TODO
     }
 
-    return to_return;
+    // return to_return
+    todo!();
 }
 
-fn GetOpcode(opcode_to_analyze: String) -> Opcode {
+fn get_opcode(opcode_to_analyze: String) -> Opcode {
     let opcode_syllables: [&str; 56] = [
         "ADC", "AND", "ASL", "BCC", "BCS", "BEQ", "BIT", "BMI", "BNE", "BPL", "BRK", "BVC", "BVS", "CLC",
         "CLD", "CLI", "CLV", "CMP", "CPX", "CPY", "DEC", "DEX", "DEY", "EOR", "INC", "INX", "INY", "JMP",
