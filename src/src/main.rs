@@ -1,6 +1,7 @@
 use std::env::args;
 
 mod read_file;
+mod analyze_code;
 
 fn main() {
     let arguments: Vec<String> = args().collect::<Vec<String>>();
