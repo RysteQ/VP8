@@ -1,5 +1,5 @@
 [package]
-name = "VP8"
+name = "VP8"  # should be snake_case
 version = "0.1.0"
 edition = "2021"
 
