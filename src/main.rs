@@ -11,5 +11,5 @@ fn main() {
         std::process::exit(-1);
     }
 
-    let _file_data_lines: Vec<String> = read_file::ReadFile(arguments[1].to_string());
+    let _file_data_lines: Vec<String> = read_file::read_file(arguments[1].to_string());
 }
