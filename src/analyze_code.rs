@@ -16,7 +16,7 @@ enum Opcode {
     LABEL,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 enum AddressingMode {
     Immediate,
     ZeroPage,
@@ -25,7 +25,8 @@ enum AddressingMode {
     AbsoluteX,
     AbsoluteY,
     IndirectX,
-    IndirectY
+    IndirectY,
+    Relative
 }
 
 pub struct Instruction {
@@ -42,19 +43,23 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
     for _i in 0..instructions.len() {
         let opcode_str: &str = &instructions[_i][0..3].trim();
         let operand: &str = &instructions[_i][3..].trim();
-
         let opcode: Opcode = get_opcode(opcode_str);
-
+        
         if opcode != Opcode::LABEL {
             let addressing_mode: AddressingMode = get_addressing_mode(operand);
-            let value: u16 = get_operand_value(operand, addressing_mode);
+            let value: u16 = get_operand_value(operand, addressing_mode.clone());
+            let mut label_name: String = String::new();
+
+            if addressing_mode.clone() == AddressingMode::Relative {
+                label_name = operand.to_string();
+            }
 
             _to_return.push(Instruction {
                 opcode: opcode,
                 addressing_mode: get_addressing_mode(operand),
                 value: value,
                 size: 1, // TODO: find a way to get the size of a given instruction
-                label_name: "".to_string()
+                label_name: label_name
             });
         } else {
             _to_return.push(Instruction { 
@@ -136,7 +141,8 @@ fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
     match addressing_mode {
         AddressingMode::ZeroPage | AddressingMode::ZeroPageX | AddressingMode::IndirectX | AddressingMode::IndirectY => hex_raw = parameters[1..3].to_string(),
         AddressingMode::Immediate => hex_raw = parameters[2..4].to_string(),
-        AddressingMode::Absolute | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => hex_raw = parameters[1..5].to_string()
+        AddressingMode::Absolute | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => hex_raw = parameters[1..5].to_string(),
+        AddressingMode::Relative => hex_raw = "ffff".to_string()
     }
     
     u16::from_str_radix(hex_raw.as_str(), 16).unwrap()

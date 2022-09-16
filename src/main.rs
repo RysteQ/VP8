@@ -19,7 +19,7 @@ fn main() {
     let _command_data = analyze_code::get_instructions(_file_data_lines);
 
     if verifier::verify_data(_command_data) {
-        emulator::start_emulator(_command_data);
+        // emulator::start_emulator(_command_data);
     } else {
         panic!("Incorrect data");
     }
