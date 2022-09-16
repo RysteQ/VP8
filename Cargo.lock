@@ -3,16 +3,6 @@
 version = 3
 
 [[package]]
-name = "VP8"
-version = "0.1.0"
-dependencies = [
- "num",
- "num-derive",
- "num-traits",
- "parse-display",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "0.7.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -226,3 +216,13 @@ name = "unicode-ident"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dcc811dc4066ac62f84f11307873c4850cb653bfa9b1719cee2bd2204a4bc5dd"
+
+[[package]]
+name = "vp8"
+version = "0.1.0"
+dependencies = [
+ "num",
+ "num-derive",
+ "num-traits",
+ "parse-display",
+]
