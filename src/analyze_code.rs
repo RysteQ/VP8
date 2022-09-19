@@ -4,12 +4,12 @@ use std::{u16, ptr::null};
 
 
 #[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, Display, FromStr, PartialEq)]
-enum Opcode {
+pub enum Opcode {
     ADC, AND, ASL, BCC, BCS, BEQ, BIT, BMI,
     BNE, BPL, BRK, BVC, BVS, CLC, CLD, CLI,
     CLV, CMP, CPX, CPY, DEC, DEX, DEY, EOR,
     INC, INX, INY, JMP, JSR, LDA, LDX, LDY,
-    LSR, NOP, ORA, PHA, PHP, PLA, LPL, ROL,
+    LSR, NOP, ORA, PHA, PHP, PLA, PLP, ROL,
     ROR, RTI, RTS, SBC, SEC, SED, SEI, STA,
     STX, STY, TAX, TAY, TSX, TXA, TXS, TYA,
 
@@ -17,24 +17,27 @@ enum Opcode {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-enum AddressingMode {
+pub enum AddressingMode {
     Immediate,
     ZeroPage,
     ZeroPageX,
+    ZeroPageY,
     Absolute,
     AbsoluteX,
     AbsoluteY,
     IndirectX,
     IndirectY,
-    Relative
+    Relative,
+    Implied
 }
 
+#[derive(Clone)]
 pub struct Instruction {
-    opcode: Opcode,
-    addressing_mode: AddressingMode,
-    value: u16,
-    size: u8,
-    label_name: String
+    pub opcode: Opcode,
+    pub addressing_mode: AddressingMode,
+    pub value: u16,
+    pub size: u8,
+    pub label_name: String
 }
 
 pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
@@ -71,7 +74,7 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
             });
         }
     }
-
+    
     _to_return
 }
 
@@ -84,6 +87,10 @@ fn get_opcode(opcode_to_analyze: &str) -> Opcode {
 }
 
 fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
+    if parameters_to_analyze.len() == 0 {
+        return AddressingMode::Implied;
+    }
+
     match parameters_to_analyze.chars().next().unwrap() {
         '#' => {
             if parameters_to_analyze.len() == 4 {
@@ -102,6 +109,8 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
                 5 => {
                     if parameters_to_analyze.chars().nth(4).unwrap() == 'X' {
                         AddressingMode::ZeroPageX
+                    } else if parameters_to_analyze.chars().nth(4).unwrap() == 'Y' {
+                        AddressingMode::ZeroPageY
                     } else {
                         AddressingMode::Absolute
                     }
@@ -139,10 +148,10 @@ fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
     let mut hex_raw: String = String::new();
 
     match addressing_mode {
-        AddressingMode::ZeroPage | AddressingMode::ZeroPageX | AddressingMode::IndirectX | AddressingMode::IndirectY => hex_raw = parameters[1..3].to_string(),
+        AddressingMode::ZeroPage | AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::IndirectX | AddressingMode::IndirectY => hex_raw = parameters[1..3].to_string(),
         AddressingMode::Immediate => hex_raw = parameters[2..4].to_string(),
         AddressingMode::Absolute | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => hex_raw = parameters[1..5].to_string(),
-        AddressingMode::Relative => hex_raw = "ffff".to_string()
+        AddressingMode::Relative | AddressingMode::Implied => hex_raw = "FFFF".to_string()
     }
     
     u16::from_str_radix(hex_raw.as_str(), 16).unwrap()
