@@ -16,7 +16,7 @@ pub enum Opcode {
     LABEL,
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum AddressingMode {
     Immediate,
     ZeroPage,
@@ -24,7 +24,7 @@ pub enum AddressingMode {
     ZeroPageY,
     Absolute,
     AbsoluteX,
-    AbsoluteY,
+    AbsoluteY,  // unused?
     IndirectX,
     IndirectY,
     Relative,
@@ -41,45 +41,45 @@ pub struct Instruction {
 }
 
 pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
-    let mut _to_return: Vec<Instruction> = Vec::new();
+    let mut to_return: Vec<Instruction> = Vec::new();
 
-    for _i in 0..instructions.len() {
-        let opcode_str: &str = &instructions[_i][0..3].trim();
-        let operand: &str = &instructions[_i][3..].trim();
+    for i in 0..instructions.len() {
+        let opcode_str: &str = &instructions[i][0..3].trim();
+        let operand: &str = &instructions[i][3..].trim();
         let opcode: Opcode = get_opcode(opcode_str);
         
         if opcode != Opcode::LABEL {
             let addressing_mode: AddressingMode = get_addressing_mode(operand);
-            let value: u16 = get_operand_value(operand, addressing_mode.clone());
+            let value: u16 = get_operand_value(operand, addressing_mode);
             let mut label_name: String = String::new();
 
-            if addressing_mode.clone() == AddressingMode::Relative {
+            if addressing_mode == AddressingMode::Relative {
                 label_name = operand.to_string();
             }
 
-            _to_return.push(Instruction {
+            to_return.push(Instruction {
                 opcode: opcode,
-                addressing_mode: get_addressing_mode(operand),
+                addressing_mode: addressing_mode,
                 value: value,
                 size: 1, // TODO: find a way to get the size of a given instruction
                 label_name: label_name
             });
         } else {
-            _to_return.push(Instruction { 
+            to_return.push(Instruction { 
                 opcode: opcode, 
                 addressing_mode: AddressingMode::Absolute, 
                 value: 0, 
                 size: 1, 
-                label_name: instructions.clone()[_i][0..&instructions.len() - 1].to_string()
+                label_name: instructions.clone()[i][0..&instructions.len() - 1].to_string()
             });
         }
     }
     
-    _to_return
+    to_return
 }
 
 fn get_opcode(opcode_to_analyze: &str) -> Opcode {
-    if opcode_to_analyze.ends_with(':') == false {
+    if !opcode_to_analyze.ends_with(':') {
         opcode_to_analyze.parse().unwrap()
     } else {
         Opcode::LABEL
@@ -107,22 +107,22 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
                 },
 
                 5 => {
-                    if parameters_to_analyze.chars().nth(4).unwrap() == 'X' {
-                        AddressingMode::ZeroPageX
-                    } else if parameters_to_analyze.chars().nth(4).unwrap() == 'Y' {
-                        AddressingMode::ZeroPageY
-                    } else {
-                        AddressingMode::Absolute
+                    // todo macro this
+                    let nth = parameters_to_analyze.chars().nth(4).unwrap();
+                    match nth {
+                        'X' => AddressingMode::ZeroPageX,
+                        'Y' => AddressingMode::ZeroPageY,
+                        _ => AddressingMode::Absolute
                     }
                 },
 
                 7 => {
-                    if parameters_to_analyze.chars().nth(6).unwrap() == 'X' {
-                        AddressingMode::AbsoluteX
-                    } else if parameters_to_analyze.chars().nth(6).unwrap() == 'Y' {
-                        AddressingMode::AbsoluteY
-                    } else {
-                        inform_error_and_exit("Error analyzing parameters", -1)
+                    // todo macro this
+                    let nth = parameters_to_analyze.chars().nth(6).unwrap();
+                    match nth {
+                        'X' => AddressingMode::ZeroPageX,
+                        'Y' => AddressingMode::ZeroPageY,
+                        _ => inform_error_and_exit("Error analyzing parameters", -1)
                     }
                 }
 
@@ -131,12 +131,11 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
         },
 
         '(' => {
-            if parameters_to_analyze.chars().nth(6).unwrap() == ')' {
-                AddressingMode::IndirectX
-            } else if parameters_to_analyze.chars().nth(6).unwrap() == 'Y' {
-                AddressingMode::IndirectY
-            } else {
-                inform_error_and_exit("Error analyzing parameters", -1)
+            let nth = parameters_to_analyze.chars().nth(6).unwrap();
+            match nth {
+                ')' => AddressingMode::IndirectX,
+                'Y' => AddressingMode::IndirectY,
+                _ => inform_error_and_exit("Error analyzing parameters", -1)
             }
         },
 
@@ -145,17 +144,13 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
 }
 
 fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
-    let mut hex_raw: String = String::new();
+    u16::from_str_radix({
+        match addressing_mode {
+            AddressingMode::Relative | AddressingMode::Implied => "FFFF",
 
-    match addressing_mode {
-        AddressingMode::ZeroPage | AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::IndirectX | AddressingMode::IndirectY => hex_raw = parameters[1..3].to_string(),
-        AddressingMode::Absolute | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => hex_raw = parameters[1..5].to_string(),
-        AddressingMode::Immediate => hex_raw = parameters[2..4].to_string(),
-        
-        AddressingMode::Relative | AddressingMode::Implied => hex_raw = "FFFF".to_string()
-    }
-    
-    u16::from_str_radix(hex_raw.as_str(), 16).unwrap()
+            _ => &parameters[2..4],
+        }
+    }, 16).unwrap()
 }
 
 fn inform_error_and_exit(msg: &str, exit_code: i32) -> ! {
