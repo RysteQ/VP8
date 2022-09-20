@@ -1,7 +1,7 @@
 use crate::analyze_code::AddressingMode;
 use crate::system::system;
 
-pub fn ADC(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+pub fn adc(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
     let mut result: u16 = registers.get_acc() as u16;
     
     match addressing_mode {
@@ -23,7 +23,7 @@ pub fn ADC(address: u16, addressing_mode: AddressingMode, registers: &mut system
     }
 }
 
-pub fn AND(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory) {
+pub fn and(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory) {
     let mut result: u8 = registers.get_acc();
     
     match addressing_mode {
@@ -40,7 +40,7 @@ pub fn AND(address: u16, addressing_mode: AddressingMode, registers: &mut system
     registers.set_acc(result);
 }
 
-pub fn ASL(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: &mut system::Memory) {
+pub fn asl(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: &mut system::Memory) {
     let mut shifted_value: u8 = 0;
     
     match addressing_mode {
@@ -62,7 +62,7 @@ pub fn ASL(address: u16, addressing_mode: AddressingMode, registers: &mut system
     }
 }
 
-pub fn BIT(address: u16, addressing_mode: AddressingMode, flags: &mut system::Flags, memory: system::Memory) {
+pub fn bit(address: u16, addressing_mode: AddressingMode, flags: &mut system::Flags, memory: system::Memory) {
     match addressing_mode {
         AddressingMode::ZeroPage | AddressingMode::Absolute => {
             let mem_cell_data: u8 = memory.get_mem_cell_value(address as usize);

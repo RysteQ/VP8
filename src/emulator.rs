@@ -9,10 +9,10 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     for i in 0..instructions.len() {
         match instructions[i].opcode {
             // todo macro this
-            Opcode::ADC => instruction_functions::ADC(instructions[i].value, instructions[i].addressing_mode.clone(), &mut registers, &mut flags, memory),
-            Opcode::AND => instruction_functions::AND(instructions[i].value, instructions[i].addressing_mode.clone(), &mut registers, memory),
-            Opcode::ASL => instruction_functions::ASL(instructions[i].value, instructions[i].addressing_mode.clone(), &mut registers, &mut flags, &mut memory),
-            Opcode::BIT => instruction_functions::BIT(instructions[i].value, instructions[i].addressing_mode.clone(), &mut flags, memory),
+            Opcode::ADC => instruction_functions::adc(instructions[i].value, instructions[i].addressing_mode.clone(), &mut registers, &mut flags, memory),
+            Opcode::AND => instruction_functions::and(instructions[i].value, instructions[i].addressing_mode.clone(), &mut registers, memory),
+            Opcode::ASL => instruction_functions::asl(instructions[i].value, instructions[i].addressing_mode.clone(), &mut registers, &mut flags, &mut memory),
+            Opcode::BIT => instruction_functions::bit(instructions[i].value, instructions[i].addressing_mode.clone(), &mut flags, memory),
 
             Opcode::BCC => {
 
