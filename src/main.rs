@@ -5,7 +5,7 @@ mod analyze_code;
 mod emulator;
 mod verifier;
 mod instruction_functions;
-mod System;
+mod system;
 
 fn main() {
     let arguments: Vec<String> = vec!["lol".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];//args().collect::<Vec<String>>();

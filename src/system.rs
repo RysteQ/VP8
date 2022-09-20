@@ -1,4 +1,4 @@
-pub mod System {
+pub mod system {
     #[derive(Clone, Copy)]
     pub struct Registers {
         acc: u8,

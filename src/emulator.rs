@@ -1,18 +1,17 @@
-use crate::System::System;
-use crate::{analyze_code::{Instruction, Opcode, AddressingMode}, instruction_functions};
+use crate::system::system;
+use crate::{analyze_code::{Instruction, Opcode}, instruction_functions};
 
 pub fn start_emulator(instructions: Vec<Instruction>) {
-    let mut registers: System::Registers = System::Registers::init();
-    let mut flags: System::Flags = System::Flags::init();
-    let mut memory: System::Memory = System::Memory::init();
+    let mut registers: system::Registers = system::Registers::init();
+    let mut flags: system::Flags = system::Flags::init();
+    let mut memory: system::Memory = system::Memory::init();
 
     for _i in 0..instructions.len() {
         match instructions[_i].opcode {
             Opcode::ADC => instruction_functions::ADC(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut registers, &mut flags, memory),
-
-            Opcode::AND => {
-
-            } 	
+            Opcode::AND => instruction_functions::AND(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut registers, memory),
+            Opcode::ASL => instruction_functions::ASL(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut registers, &mut flags, memory),
+            Opcode::BIT => instruction_functions::BIT(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut flags, memory),
 
             Opcode::ASL => {
 
@@ -30,9 +29,6 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
             } 	
 
-            Opcode::BIT => {
-
-            } 	
 
             Opcode::BMI => {
 
