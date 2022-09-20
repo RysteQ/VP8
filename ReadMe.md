@@ -3,7 +3,7 @@
 VP8 will be a virtual computer that you can code in 6502 assembly
 
 Current TODO list:
-- Finish the instruction_functions.rs
+- Finish the instruction_functions.rs (5 out of 56 instructions completed)
 - Find a way to have a some sort of GUI for the output (128x128)
 
 Future goals:
