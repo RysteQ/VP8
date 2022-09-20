@@ -16,8 +16,8 @@ pub fn verify_data(instructions: Vec<Instruction>) -> bool {
     ];
 
     for _i in 0..instructions.len() {
-        let _opcode_to_check: Opcode = instructions[_i].opcode.clone();
-        let _addressing_mode: AddressingMode = instructions[_i].addressing_mode.clone();
+        let _opcode_to_check: Opcode = instructions[_i].opcode;
+        let _addressing_mode: AddressingMode = instructions[_i].addressing_mode;
         let mut allowed_command: bool = true;
 
         match _opcode_to_check {
@@ -29,21 +29,17 @@ pub fn verify_data(instructions: Vec<Instruction>) -> bool {
             Opcode::BIT => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::Absolute]),
 
             _ =>  {
-                if _only_implied_mode.contains(&_opcode_to_check) {
-                    if _addressing_mode != AddressingMode::Implied {
-                        allowed_command = false;
-                    }
+                if _only_implied_mode.contains(&_opcode_to_check) && _addressing_mode != AddressingMode::Implied {
+                    allowed_command = false;
                 }
         
-                if _branch_instructions.contains(&_opcode_to_check) {
-                    if _addressing_mode != AddressingMode::Relative {
-                        allowed_command = false;
-                    }
+                if _branch_instructions.contains(&_opcode_to_check) && _addressing_mode != AddressingMode::Relative {
+                    allowed_command = false;
                 }
             }
         }
 
-        if allowed_command == false {
+        if !allowed_command {
             return false;
         }
     }
@@ -52,7 +48,7 @@ pub fn verify_data(instructions: Vec<Instruction>) -> bool {
 }
 
 fn allowed_addressing_mode_check(_addressing_mode: AddressingMode, _allowed_addressing_modes: Vec<AddressingMode>) -> bool {
-    if _allowed_addressing_modes.contains(&_addressing_mode) == false {
+    if !_allowed_addressing_modes.contains(&_addressing_mode) {
         false;
     } 
 

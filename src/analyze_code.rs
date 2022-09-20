@@ -3,7 +3,7 @@ use parse_display::{Display, FromStr};
 use std::u16;
 
 
-#[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, Display, FromStr, PartialEq)]
+#[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, Display, FromStr, PartialEq, Eq)]
 pub enum Opcode {
     ADC, AND, ASL, BCC, BCS, BEQ, BIT, BMI,
     BNE, BPL, BRK, BVC, BVS, CLC, CLD, CLI,
@@ -16,7 +16,7 @@ pub enum Opcode {
     LABEL,
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AddressingMode {
     Immediate,
     ZeroPage,
@@ -44,8 +44,8 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
     let mut to_return: Vec<Instruction> = Vec::new();
 
     for i in 0..instructions.len() {
-        let opcode_str: &str = &instructions[i][0..3].trim();
-        let operand: &str = &instructions[i][3..].trim();
+        let opcode_str: &str = instructions[i][0..3].trim();
+        let operand: &str = instructions[i][3..].trim();
         let opcode: Opcode = get_opcode(opcode_str);
         
         if opcode != Opcode::LABEL {
@@ -58,15 +58,15 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
             }
 
             to_return.push(Instruction {
-                opcode: opcode,
-                addressing_mode: addressing_mode,
-                value: value,
+                opcode,
+                addressing_mode,
+                value,
                 size: 1, // TODO: find a way to get the size of a given instruction
-                label_name: label_name
+                label_name
             });
         } else {
             to_return.push(Instruction { 
-                opcode: opcode, 
+                opcode, 
                 addressing_mode: AddressingMode::Absolute, 
                 value: 0, 
                 size: 1, 
@@ -87,7 +87,7 @@ fn get_opcode(opcode_to_analyze: &str) -> Opcode {
 }
 
 fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
-    if parameters_to_analyze.len() == 0 {
+    if parameters_to_analyze.is_empty() {
         return AddressingMode::Implied;
     }
 
