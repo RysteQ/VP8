@@ -1,6 +1,6 @@
 use num_derive::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
-use std::{u16, ptr::null};
+use std::u16;
 
 
 #[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, Display, FromStr, PartialEq)]
@@ -149,8 +149,9 @@ fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
 
     match addressing_mode {
         AddressingMode::ZeroPage | AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::IndirectX | AddressingMode::IndirectY => hex_raw = parameters[1..3].to_string(),
-        AddressingMode::Immediate => hex_raw = parameters[2..4].to_string(),
         AddressingMode::Absolute | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => hex_raw = parameters[1..5].to_string(),
+        AddressingMode::Immediate => hex_raw = parameters[2..4].to_string(),
+        
         AddressingMode::Relative | AddressingMode::Implied => hex_raw = "FFFF".to_string()
     }
     

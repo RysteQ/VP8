@@ -1,11 +1,10 @@
 use std::env::args;
 
-use emulator::start_emulator;
-
 mod read_file;
 mod analyze_code;
 mod emulator;
 mod verifier;
+mod instruction_functions;
 
 fn main() {
     let arguments: Vec<String> = vec!["lol".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];//args().collect::<Vec<String>>();
