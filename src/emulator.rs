@@ -6,16 +6,13 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     let mut flags: system::Flags = system::Flags::init();
     let mut memory: system::Memory = system::Memory::init();
 
-    for _i in 0..instructions.len() {
-        match instructions[_i].opcode {
-            Opcode::ADC => instruction_functions::ADC(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut registers, &mut flags, memory),
-            Opcode::AND => instruction_functions::AND(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut registers, memory),
-            Opcode::ASL => instruction_functions::ASL(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut registers, &mut flags, memory),
-            Opcode::BIT => instruction_functions::BIT(instructions[_i].value, instructions[_i].addressing_mode.clone(), &mut flags, memory),
-
-            Opcode::ASL => {
-
-            } 	
+    for i in 0..instructions.len() {
+        match instructions[i].opcode {
+            // todo macro this
+            Opcode::ADC => instruction_functions::adc(instructions[i].value, instructions[i].addressing_mode, &mut registers, &mut flags, memory),
+            Opcode::AND => instruction_functions::and(instructions[i].value, instructions[i].addressing_mode, &mut registers, memory),
+            Opcode::ASL => instruction_functions::asl(instructions[i].value, instructions[i].addressing_mode, &mut registers, &mut flags, &mut memory),
+            Opcode::BIT => instruction_functions::bit(instructions[i].value, instructions[i].addressing_mode, &mut flags, memory),
 
             Opcode::BCC => {
 
