@@ -8,7 +8,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
     for _i in 0..instructions.len() {
         match instructions[_i].opcode {
-            Opcode::ADC => //instruction_functions::ADC(instructions[_i].value, instructions[_i].addressing_mode.clone(), registers, flags, memory),
+            Opcode::ADC => instruction_functions::ADC(instructions[_i].value, instructions[_i].addressing_mode.clone(), registers, flags, memory),
 
             Opcode::AND => {
 
