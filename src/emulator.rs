@@ -39,18 +39,9 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::CLD => instruction_functions::cld(&mut flags),
             Opcode::CLI => instruction_functions::cli(&mut flags),
             Opcode::CLV => instruction_functions::clv(&mut flags),
-
-            Opcode::CMP => {
-
-            } 	
-
-            Opcode::CPX => {
-
-            } 	
-
-            Opcode::CPY => {
-
-            } 	
+            Opcode::CMP => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
+            Opcode::CPX => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
+            Opcode::CPY => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
 
             Opcode::DEC => {
 

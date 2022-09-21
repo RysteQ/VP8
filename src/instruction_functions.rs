@@ -193,58 +193,31 @@ pub fn tya(registers: &mut system::Registers) {
 
 pub fn cmp(address: u16, addressing_mode: AddressingMode, registers: system::Registers, flags: &mut system::Flags, memory: system::Memory) {
     match addressing_mode {
-        AddressingMode::Immediate => {
-            let result: Ordering = address.cmp(&(registers.get_acc() as u16));
-
-            match result {
-                Ordering::Less => {
-
-                }
-
-                Ordering::Equal => {
-
-                }
-
-                Ordering::Greater => {
-
-                }
-            }
-        }
-
-        AddressingMode::ZeroPage | AddressingMode::Absolute => {
-
-        }
-
-        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => {
-
-        }
-
-        AddressingMode::AbsoluteY => {
-
-        }
-
-        AddressingMode::IndirectX => {
-
-        }
-
-        AddressingMode::IndirectY => {
-
-        }
+        AddressingMode::Immediate => compare(registers.get_acc(), address as u8, flags),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => compare(registers.get_acc(), memory.get_mem_cell_value(address as usize), flags),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => compare(registers.get_acc(), memory.get_mem_cell_value(address as usize + registers.get_x() as usize), flags),
+        AddressingMode::AbsoluteY => compare(registers.get_acc(), memory.get_mem_cell_value(address as usize + registers.get_y() as usize), flags),
+        AddressingMode::IndirectX => compare(registers.get_acc(), memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_x())), flags),
+        AddressingMode::IndirectY => compare(registers.get_acc(), memory.get_mem_cell_value(indirect_indexed_address(memory, address, registers.get_y())), flags),
 
         _ => { }
     }
 }
 
-pub fn cpx(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+pub fn cpx(address: u16, addressing_mode: AddressingMode, registers: system::Registers, flags: &mut system::Flags, memory: system::Memory) {
     match addressing_mode {
+        AddressingMode::Immediate => compare(registers.get_x(), address as u8, flags),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => compare(registers.get_x(), memory.get_mem_cell_value(address as usize), flags),
         _ => { }
     }
 }
 
-pub fn cpy(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
-match addressing_mode {
+pub fn cpy(address: u16, addressing_mode: AddressingMode, registers: system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+    match addressing_mode {
+        AddressingMode::Immediate => compare(registers.get_y(), address as u8, flags),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => compare(registers.get_y(), memory.get_mem_cell_value(address as usize), flags),
         _ => { }
-    }    
+    } 
 }
 
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
@@ -273,4 +246,22 @@ fn branch(flag_to_check: bool, expected_value: bool, label_name: String, labels:
     }
 
     current_index
+}
+
+fn compare(register_value: u8, expected_value: u8, flags: &mut system::Flags) {
+    let order_value: Ordering = register_value.cmp(&expected_value);
+
+    match order_value {
+        Ordering::Less => flags.set_negative_flag(false),
+
+        Ordering::Equal => {
+            flags.set_zerro_flag(true);
+            flags.set_carry_flag(true);
+        }
+
+        Ordering::Greater => {
+            flags.set_negative_flag(true);
+            flags.set_carry_flag(true);
+        }
+    }
 }
