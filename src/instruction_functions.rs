@@ -75,6 +75,146 @@ pub fn bit(address: u16, addressing_mode: AddressingMode, flags: &mut system::Fl
     }
 }
 
+pub fn bpl(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_negative_flag() == false {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn bmi(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_negative_flag() {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn bvc(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_overflow_flag() == false {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn bvs(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_overflow_flag() {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn bcc(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_carry_flag() == false {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn bcs(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_carry_flag() {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn bne(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_negative_flag() {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn beq(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
+    if flags.get_zerro_flag() {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {} not found", label_name);
+    }
+
+    current_index
+}
+
+pub fn clc(flags: &mut system::Flags) {
+    flags.set_carry_flag(false);
+}
+
+pub fn sec(flags: &mut system::Flags) {
+    flags.set_carry_flag(true);
+}
+
+pub fn cli(flags: &mut system::Flags) {
+    flags.set_interrupt_disable_flag(false);
+}
+
+pub fn sei(flags: &mut system::Flags) {
+    flags.set_interrupt_disable_flag(true);
+}
+
+pub fn clv(flags: &mut system::Flags) {
+    flags.set_overflow_flag(false);
+}
+
+pub fn cld(flags: &mut system::Flags) {
+    flags.set_decimal_flag(false);
+}
+
+pub fn sed(flags: &mut system::Flags) {
+    flags.set_decimal_flag(true);
+}
+
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
     let low: u8 = memory.get_mem_cell_value(address as usize + x_register as usize);
     let high: u8 = memory.get_mem_cell_value(address as usize + x_register as usize + 1);

@@ -84,7 +84,31 @@ pub mod system {
         }
 
         pub fn set_negative_flag(&mut self, value: bool) {
-            self.negative = value;   
+            self.negative = value;
+        }
+
+        pub fn get_carry_flag(&self) -> bool {
+            self.carry
+        }
+
+        pub fn get_zerro_flag(&self) -> bool {
+            self.zero
+        }
+
+        pub fn get_interrupt_disable_flag(&self) -> bool {
+            self.interrupt_disable
+        }
+
+        pub fn get_decimal_flag(&self) -> bool {
+            self.decimal
+        }
+
+        pub fn get_overflow_flag(&self) -> bool {
+            self.overflow
+        }
+
+        pub fn get_negative_flag(&self) -> bool {
+            self.negative
         }
     }
     
