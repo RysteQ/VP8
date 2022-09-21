@@ -32,7 +32,7 @@ pub fn and(address: u16, addressing_mode: AddressingMode, registers: &mut system
         AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => result &= memory.get_mem_cell_value(address as usize + registers.get_x() as usize),
         AddressingMode::AbsoluteY => result &= memory.get_mem_cell_value(address as usize + registers.get_y() as usize),
         AddressingMode::IndirectX => result &= memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_x())),
-        AddressingMode::IndirectY => result &= memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_y())),
+        AddressingMode::IndirectY => result &= memory.get_mem_cell_value(indirect_indexed_address(memory, address, registers.get_y())),
 
         _ => { }
     }
@@ -215,19 +215,35 @@ pub fn sed(flags: &mut system::Flags) {
     flags.set_decimal_flag(true);
 }
 
-pub fn sta() {
-
+pub fn sta(address: u16, addressing_mode: AddressingMode, registers: system::Registers, memory: &mut system::Memory) {
+    match addressing_mode {
+        AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, registers.get_acc()),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => memory.set_mem_cell_value(address as usize, registers.get_acc()),
+        AddressingMode::AbsoluteY => memory.set_mem_cell_value(address as usize, registers.get_acc()),
+        AddressingMode::IndirectX => memory.set_mem_cell_value(indexed_indirect_address(*memory, address, registers.get_x()), registers.get_acc()),
+        AddressingMode::IndirectY => memory.set_mem_cell_value(indirect_indexed_address(*memory, address, registers.get_y()), registers.get_acc()),
+        
+        _ => { }
+    }
 }
 
-pub fn stx() {
+pub fn stx(address: u16, addressing_mode: AddressingMode, registers: system::Registers, memory: &mut system::Memory) {
+    match addressing_mode {
+        AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, registers.get_x()),
+        AddressingMode::ZeroPageY => memory.set_mem_cell_value(address as usize + registers.get_y() as usize, registers.get_x()),
 
+        _ => { }
+    }
 }
 
-pub fn sty() {
+pub fn sty(address: u16, addressing_mode: AddressingMode, registers: system::Registers, memory: &mut system::Memory) {
+    match addressing_mode {
+        AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, registers.get_y()),
+        AddressingMode::ZeroPageX => memory.set_mem_cell_value(address as usize + registers.get_x() as usize, registers.get_y()),
 
+        _ => { }
+    }
 }
-
-// TAX 	TAY 	TSX 	TXA 	TXS 	TYA
 
 pub fn tax() {
 
@@ -250,7 +266,7 @@ pub fn txs() {
 }
 
 pub fn tya() {
-    
+
 }
 
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {

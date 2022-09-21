@@ -151,18 +151,9 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::SEC => instruction_functions::sec(&mut flags),
             Opcode::SED => instruction_functions::sed(&mut flags),
             Opcode::SEI => instruction_functions::sei(&mut flags),
-
-            Opcode::STA => {
-
-            } 	
-
-            Opcode::STX => {
-
-            } 	
-
-            Opcode::STY => {
-
-            } 	
+            Opcode::STA => instruction_functions::sta(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::STX => instruction_functions::stx(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::STY => instruction_functions::sty(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
 
             Opcode::TAX => {
 
