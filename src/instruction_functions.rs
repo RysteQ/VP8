@@ -245,28 +245,28 @@ pub fn sty(address: u16, addressing_mode: AddressingMode, registers: system::Reg
     }
 }
 
-pub fn tax() {
-
+pub fn tax(registers: &mut system::Registers) {
+    registers.set_x(registers.get_acc());
 }
 
-pub fn tay() {
-
+pub fn tay(registers: &mut system::Registers) {
+    registers.set_y(registers.get_acc());
 }
 
 pub fn tsx() {
 
 }
 
-pub fn txa() {
-
+pub fn txa(registers: &mut system::Registers) {
+    registers.set_acc(registers.get_x());
 }
 
 pub fn txs() {
 
 }
 
-pub fn tya() {
-
+pub fn tya(registers: &mut system::Registers) {
+    registers.set_acc(registers.get_y());
 }
 
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
