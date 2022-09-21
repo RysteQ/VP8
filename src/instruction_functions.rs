@@ -215,6 +215,44 @@ pub fn sed(flags: &mut system::Flags) {
     flags.set_decimal_flag(true);
 }
 
+pub fn sta() {
+
+}
+
+pub fn stx() {
+
+}
+
+pub fn sty() {
+
+}
+
+// TAX 	TAY 	TSX 	TXA 	TXS 	TYA
+
+pub fn tax() {
+
+}
+
+pub fn tay() {
+
+}
+
+pub fn tsx() {
+
+}
+
+pub fn txa() {
+
+}
+
+pub fn txs() {
+
+}
+
+pub fn tya() {
+    
+}
+
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
     let low: u8 = memory.get_mem_cell_value(address as usize + x_register as usize);
     let high: u8 = memory.get_mem_cell_value(address as usize + x_register as usize + 1);

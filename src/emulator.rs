@@ -35,22 +35,10 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::BVC => i = instruction_functions::bvc(i, flags, instructions[i].label_name.clone(), labels.clone()),
             Opcode::BVS => i = instruction_functions::bvs(i, flags, instructions[i].label_name.clone(), labels.clone()),
             Opcode::BRK => break,
-
-            Opcode::CLC => {
-
-            }
-
-            Opcode::CLD => {
-
-            } 	
-
-            Opcode::CLI => {
-
-            } 	
-
-            Opcode::CLV => {
-
-            } 	
+            Opcode::CLC => instruction_functions::clc(&mut flags),
+            Opcode::CLD => instruction_functions::cld(&mut flags),
+            Opcode::CLI => instruction_functions::cli(&mut flags),
+            Opcode::CLV => instruction_functions::clv(&mut flags),
 
             Opcode::CMP => {
 
@@ -160,17 +148,9 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
             } 	
 
-            Opcode::SEC => {
-
-            } 	
-
-            Opcode::SED => {
-
-            } 	
-
-            Opcode::SEI => {
-
-            } 	
+            Opcode::SEC => instruction_functions::sec(&mut flags),
+            Opcode::SED => instruction_functions::sed(&mut flags),
+            Opcode::SEI => instruction_functions::sei(&mut flags),
 
             Opcode::STA => {
 
