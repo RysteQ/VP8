@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 use crate::analyze_code::AddressingMode;
 use crate::system::system::{self, Registers};
 
@@ -76,115 +78,35 @@ pub fn bit(address: u16, addressing_mode: AddressingMode, flags: &mut system::Fl
 }
 
 pub fn bpl(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_negative_flag() == false {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_negative_flag(), false, label_name, labels, current_index)
 }
 
 pub fn bmi(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_negative_flag() {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_negative_flag(), true, label_name, labels, current_index)
 }
 
 pub fn bvc(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_overflow_flag() == false {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_overflow_flag(), false, label_name, labels, current_index)
 }
 
 pub fn bvs(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_overflow_flag() {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_overflow_flag(), true, label_name, labels, current_index)
 }
 
 pub fn bcc(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_carry_flag() == false {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_carry_flag(), false, label_name, labels, current_index)
 }
 
 pub fn bcs(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_carry_flag() {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_carry_flag(), true, label_name, labels, current_index)
 }
 
 pub fn bne(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_negative_flag() {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_zerro_flag(), false, label_name, labels, current_index)
 }
 
 pub fn beq(current_index: usize, flags: system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    if flags.get_zerro_flag() {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1 - 1;
-            }
-        }
-
-        panic!("Label {} not found", label_name);
-    }
-
-    current_index
+    branch(flags.get_zerro_flag(), true, label_name, labels, current_index)
 }
 
 pub fn clc(flags: &mut system::Flags) {
@@ -269,6 +191,62 @@ pub fn tya(registers: &mut system::Registers) {
     registers.set_acc(registers.get_y());
 }
 
+pub fn cmp(address: u16, addressing_mode: AddressingMode, registers: system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+    match addressing_mode {
+        AddressingMode::Immediate => {
+            let result: Ordering = address.cmp(&(registers.get_acc() as u16));
+
+            match result {
+                Ordering::Less => {
+
+                }
+
+                Ordering::Equal => {
+
+                }
+
+                Ordering::Greater => {
+
+                }
+            }
+        }
+
+        AddressingMode::ZeroPage | AddressingMode::Absolute => {
+
+        }
+
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => {
+
+        }
+
+        AddressingMode::AbsoluteY => {
+
+        }
+
+        AddressingMode::IndirectX => {
+
+        }
+
+        AddressingMode::IndirectY => {
+
+        }
+
+        _ => { }
+    }
+}
+
+pub fn cpx(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+    match addressing_mode {
+        _ => { }
+    }
+}
+
+pub fn cpy(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+match addressing_mode {
+        _ => { }
+    }    
+}
+
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
     let low: u8 = memory.get_mem_cell_value(address as usize + x_register as usize);
     let high: u8 = memory.get_mem_cell_value(address as usize + x_register as usize + 1);
@@ -281,4 +259,18 @@ fn indirect_indexed_address(memory: system::Memory, address: u16, y_register: u8
     let high: u8 = memory.get_mem_cell_value(address as usize + 1);
     
     (((high as u16) << 8 | low as u16) + y_register as u16) as usize
+}
+
+fn branch(flag_to_check: bool, expected_value: bool, label_name: String, labels: Vec<(String, usize)>, current_index: usize) -> usize {
+    if flag_to_check == expected_value {
+        for i in 0..labels.len() {
+            if label_name == labels[i].0 {
+                return labels[i].1 - 1;
+            }
+        }
+
+        panic!("Label {{{}}} does not exist", label_name);
+    }
+
+    current_index
 }
