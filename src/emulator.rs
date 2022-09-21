@@ -154,31 +154,12 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::STA => instruction_functions::sta(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
             Opcode::STX => instruction_functions::stx(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
             Opcode::STY => instruction_functions::sty(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
-
-            Opcode::TAX => {
-
-            } 	
-
-            Opcode::TAY => {
-
-            } 	
-
-            Opcode::TSX => {
-
-            } 	
-
-            Opcode::TXA => {
-
-            } 	
-
-            Opcode::TXS => {
-
-            } 	
-
-            Opcode::TYA => {
-
-            }
-
+            Opcode::TAX => instruction_functions::tax(&mut registers),
+            Opcode::TAY => instruction_functions::tay(&mut registers),
+            Opcode::TSX => instruction_functions::tsx(&mut registers),
+            Opcode::TXA => instruction_functions::txa(&mut registers),
+            Opcode::TXS => instruction_functions::txs(&mut registers),
+            Opcode::TYA => instruction_functions::tya(&mut registers),
             Opcode::LABEL => continue
         }
     }

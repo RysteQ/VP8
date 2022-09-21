@@ -3,7 +3,8 @@ pub mod system {
     pub struct Registers {
         acc: u8,
         x: u8,
-        y: u8
+        y: u8,
+        sp: u8
     }
     
     impl Registers {
@@ -11,7 +12,8 @@ pub mod system {
             Registers { 
                 acc: 0,
                 x: 0,
-                y: 0
+                y: 0,
+                sp: 255
             }
         }
 
@@ -27,6 +29,10 @@ pub mod system {
             self.y
         }
     
+        pub fn get_sp(&self) -> u8 {
+            self.sp
+        }
+
         pub fn set_acc(&mut self, value: u8) {
             self.acc = value
         }
@@ -37,6 +43,10 @@ pub mod system {
     
         pub fn set_y(&mut self, value: u8) {
             self.y = value
+        }
+
+        pub fn set_sp(&mut self, value: u8) {
+            self.sp = value;
         }
     }
     

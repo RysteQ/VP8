@@ -1,5 +1,5 @@
 use crate::analyze_code::AddressingMode;
-use crate::system::system;
+use crate::system::system::{self, Registers};
 
 pub fn adc(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
     let mut result: u16 = registers.get_acc() as u16;
@@ -253,16 +253,16 @@ pub fn tay(registers: &mut system::Registers) {
     registers.set_y(registers.get_acc());
 }
 
-pub fn tsx() {
-
+pub fn tsx(registers: &mut system::Registers) {
+    registers.set_x(registers.get_sp());
 }
 
 pub fn txa(registers: &mut system::Registers) {
     registers.set_acc(registers.get_x());
 }
 
-pub fn txs() {
-
+pub fn txs(registers: &mut system::Registers) {
+    registers.set_sp(registers.get_x());
 }
 
 pub fn tya(registers: &mut system::Registers) {
