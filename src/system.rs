@@ -105,17 +105,6 @@ pub mod system {
             self.zero
         }
 
-        // Most likely going to be removed
-        /*
-        pub fn get_interrupt_disable_flag(&self) -> bool {
-            self.interrupt_disable
-        }
-
-        pub fn get_decimal_flag(&self) -> bool {
-            self.decimal
-        }
-        */
-
         pub fn get_overflow_flag(&self) -> bool {
             self.overflow
         }

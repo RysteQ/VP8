@@ -63,31 +63,23 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
             Opcode::ORA => {
 
-            } 	
-
-            Opcode::PHA => {
-
-            } 	
-
-            Opcode::PHP => {
-
-            } 	
+            }
 
             Opcode::PLA => {
 
-            } 	
+            }
 
-            Opcode::PLP => {
+            Opcode::PHA => {
 
-            } 	
+            }
 
             Opcode::ROL => {
 
-            } 	
+            }
 
             Opcode::ROR => {
 
-            } 	
+            }
 
             Opcode::RTI => {
 
@@ -95,11 +87,11 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
             Opcode::RTS => {
 
-            } 	
+            }
 
             Opcode::SBC => {
 
-            } 	
+            }
 
             Opcode::SEC => instruction_functions::sec(&mut flags),
             Opcode::SED => instruction_functions::sed(&mut flags),
@@ -113,7 +105,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::TXA => instruction_functions::txa(&mut registers),
             Opcode::TXS => instruction_functions::txs(&mut registers),
             Opcode::TYA => instruction_functions::tya(&mut registers),
-            Opcode::LABEL => continue
+            Opcode::LABEL => continue,
         }
     }
 }

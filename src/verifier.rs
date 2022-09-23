@@ -1,13 +1,12 @@
 use crate::analyze_code::{Instruction, Opcode, AddressingMode};
 
 pub fn verify_data(instructions: Vec<Instruction>) -> bool {
-    let _only_implied_mode: [Opcode; 27] = [
-        Opcode::TXS, Opcode::TSX, Opcode::PHA, Opcode::PLP, Opcode::PHP,
-        Opcode::PLA, Opcode::RTS, Opcode::RTI, Opcode::TAX, Opcode::TXA,
-        Opcode::DEX, Opcode::INX, Opcode::TAY, Opcode::TYA, Opcode::DEY,
-        Opcode::INY, Opcode::NOP, Opcode::CLC, Opcode::SEC, Opcode::CLI,
-        Opcode::SEI, Opcode::CLV, Opcode::CLD, Opcode::SED, Opcode::BRK,
-        Opcode::JMP, Opcode::JSR
+    let _only_implied_mode: [Opcode; 25] = [
+        Opcode::TXS, Opcode::TSX, Opcode::PHA, Opcode::PLA, Opcode::RTS, 
+        Opcode::RTI, Opcode::TAX, Opcode::TXA, Opcode::DEX, Opcode::INX, 
+        Opcode::TAY, Opcode::TYA, Opcode::DEY, Opcode::INY, Opcode::NOP, 
+        Opcode::CLC, Opcode::SEC, Opcode::CLI, Opcode::SEI, Opcode::CLV, 
+        Opcode::CLD, Opcode::SED, Opcode::BRK, Opcode::JMP, Opcode::JSR
     ];
 
     let _branch_instructions: [Opcode; 8] = [
@@ -39,7 +38,7 @@ pub fn verify_data(instructions: Vec<Instruction>) -> bool {
             }
         }
 
-        if !allowed_command {
+        if allowed_command == false {
             return false;
         }
     }
