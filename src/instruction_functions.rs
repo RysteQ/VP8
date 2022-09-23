@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::ops::Add;
 
 use crate::analyze_code::AddressingMode;
 use crate::system::system::{self, Registers};
@@ -253,6 +254,51 @@ pub fn inx(registers: &mut system::Registers) {
 
 pub fn iny(registers: &mut system::Registers) {
     registers.set_y(registers.get_y() + 1);
+}
+
+pub fn eor(address: u16, addressing_mode: AddressingMode, memory: system::Memory, registers: &mut system::Registers) {
+    match addressing_mode {
+        AddressingMode::ZeroPage | AddressingMode::Absolute => registers.set_acc(registers.get_acc() ^ memory.get_mem_cell_value(address as usize)),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => registers.set_acc(registers.get_acc() ^ memory.get_mem_cell_value(address as usize + registers.get_acc() as usize)),
+        AddressingMode::AbsoluteY => registers.set_acc(registers.get_acc() ^ memory.get_mem_cell_value(address as usize + registers.get_y() as usize)),
+        AddressingMode::IndirectX => registers.set_acc(registers.get_acc() ^ memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_x()))),
+        AddressingMode::IndirectY => registers.set_acc(registers.get_acc() ^ memory.get_mem_cell_value(indirect_indexed_address(memory, address, registers.get_y()))),
+
+        _ => { }
+    }
+}
+
+pub fn lda(address: u16, addressing_mode: AddressingMode, memory: system::Memory, registers: &mut system::Registers) {
+    match addressing_mode {
+        AddressingMode::Immediate => registers.set_acc(address as u8),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => registers.set_acc(memory.get_mem_cell_value(address as usize)),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => registers.set_acc(memory.get_mem_cell_value(address as usize + registers.get_x() as usize)),
+        AddressingMode::AbsoluteY => registers.set_acc(memory.get_mem_cell_value(address as usize + registers.get_y() as usize)),
+        AddressingMode::IndirectX => registers.set_acc(memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_x()))),
+        AddressingMode::IndirectY => registers.set_acc(memory.get_mem_cell_value(indirect_indexed_address(memory, address, registers.get_y()))),
+
+        _ => { }
+    }
+}
+
+pub fn ldx(address: u16, addressing_mode: AddressingMode, memory: system::Memory, registers: &mut system::Registers) {
+    match addressing_mode {
+        AddressingMode::Immediate => registers.set_x(address as u8),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => registers.set_x(memory.get_mem_cell_value(address as usize)),
+        AddressingMode::ZeroPageY | AddressingMode::AbsoluteY => registers.set_x(memory.get_mem_cell_value(address as usize + registers.get_y() as usize)),
+
+        _ => { }
+    }
+}
+
+pub fn ldy(address: u16, addressing_mode: AddressingMode, memory: system::Memory, registers: &mut system::Registers) {
+    match addressing_mode {
+        AddressingMode::Immediate => registers.set_y(address as u8),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => registers.set_y(memory.get_mem_cell_value(address as usize)),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => registers.set_y(memory.get_mem_cell_value(address as usize + registers.get_x() as usize)),
+
+        _ => { }
+    }
 }
 
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {

@@ -45,11 +45,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::DEC => instruction_functions::dec(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
             Opcode::DEX => instruction_functions::dex(&mut registers),
             Opcode::DEY => instruction_functions::dey(&mut registers),
-
-            Opcode::EOR => {
-
-            } 	
-
+            Opcode::EOR => instruction_functions::eor(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
             Opcode::INC => instruction_functions::dec(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
             Opcode::INX => instruction_functions::inx(&mut registers),
             Opcode::INY => instruction_functions::iny(&mut registers),
@@ -62,17 +58,9 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
             } 	
 
-            Opcode::LDA => {
-
-            } 	
-
-            Opcode::LDX => {
-
-            } 	
-
-            Opcode::LDY => {
-
-            } 	
+            Opcode::LDA => instruction_functions::ldx(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
+            Opcode::LDX => instruction_functions::ldx(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
+            Opcode::LDY => instruction_functions::ldx(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
 
             Opcode::LSR => {
 
