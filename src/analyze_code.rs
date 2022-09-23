@@ -24,6 +24,7 @@ pub enum AddressingMode {
     ZeroPageY,
     Absolute,
     AbsoluteX,
+    AbsoluteY,
     IndirectX,
     IndirectY,
     Relative,
