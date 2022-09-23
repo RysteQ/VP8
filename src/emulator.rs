@@ -42,34 +42,17 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::CMP => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
             Opcode::CPX => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
             Opcode::CPY => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
-
-            Opcode::DEC => {
-
-            } 	
-
-            Opcode::DEX => {
-
-            } 	
-
-            Opcode::DEY => {
-
-            } 	
+            Opcode::DEC => instruction_functions::dec(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::DEX => instruction_functions::dex(&mut registers),
+            Opcode::DEY => instruction_functions::dey(&mut registers),
 
             Opcode::EOR => {
 
             } 	
 
-            Opcode::INC => {
-
-            } 	
-
-            Opcode::INX => {
-
-            } 	
-
-            Opcode::INY => {
-
-            } 	
+            Opcode::INC => instruction_functions::dec(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::INX => instruction_functions::inx(&mut registers),
+            Opcode::INY => instruction_functions::iny(&mut registers),
 
             Opcode::JMP => {
 
@@ -95,9 +78,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
 
             } 	
 
-            Opcode::NOP => {
-
-            } 	
+            Opcode::NOP => continue,
 
             Opcode::ORA => {
 

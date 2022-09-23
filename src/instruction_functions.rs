@@ -216,8 +216,43 @@ pub fn cpy(address: u16, addressing_mode: AddressingMode, registers: system::Reg
     match addressing_mode {
         AddressingMode::Immediate => compare(registers.get_y(), address as u8, flags),
         AddressingMode::ZeroPage | AddressingMode::Absolute => compare(registers.get_y(), memory.get_mem_cell_value(address as usize), flags),
+        
         _ => { }
     } 
+}
+
+pub fn dec(address: u16, addressing_mode: AddressingMode, registers: system::Registers, memory: &mut system::Memory) {
+    match addressing_mode {
+        AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, memory.get_mem_cell_value(address as usize) - 1),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => memory.set_mem_cell_value(address as usize + registers.get_x() as usize, memory.get_mem_cell_value(address as usize) - 1),
+
+        _ => { }
+    }
+}
+
+pub fn dex(registers: &mut system::Registers) {
+    registers.set_x(registers.get_x() - 1);
+}
+
+pub fn dey(registers: &mut system::Registers) {
+    registers.set_y(registers.get_y() - 1);
+}
+
+pub fn inc(address: u16, addressing_mode: AddressingMode, registers: system::Registers, memory: &mut system::Memory) {
+    match addressing_mode {
+        AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, memory.get_mem_cell_value(address as usize) + 1),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => memory.set_mem_cell_value(address as usize + registers.get_x() as usize, memory.get_mem_cell_value(address as usize) + 1),
+
+        _ => { }
+    }
+}
+
+pub fn inx(registers: &mut system::Registers) {
+    registers.set_x(registers.get_x() + 1);
+}
+
+pub fn iny(registers: &mut system::Registers) {
+    registers.set_y(registers.get_y() + 1);
 }
 
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
