@@ -1,3 +1,4 @@
+use crate::analyze_code::AddressingMode;
 use crate::system::system;
 use crate::{analyze_code::{Instruction, Opcode}, instruction_functions};
 
@@ -20,12 +21,15 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     let labels: Vec<(String, usize)> = get_labels(instructions.clone());
 
     for mut i in 0..instructions.len() {
+        let address: u16 = instructions[i].value;
+        let addressing_mode: AddressingMode = instructions[i].addressing_mode;
+
         match instructions[i].opcode {
             // todo macro this
-            Opcode::ADC => instruction_functions::adc(instructions[i].value, instructions[i].addressing_mode, &mut registers, &mut flags, memory),
-            Opcode::AND => instruction_functions::and(instructions[i].value, instructions[i].addressing_mode, &mut registers, memory),
-            Opcode::ASL => instruction_functions::asl(instructions[i].value, instructions[i].addressing_mode, &mut registers, &mut flags, &mut memory),
-            Opcode::BIT => instruction_functions::bit(instructions[i].value, instructions[i].addressing_mode, &mut flags, memory),
+            Opcode::ADC => instruction_functions::adc(address, addressing_mode, &mut registers, &mut flags, memory),
+            Opcode::AND => instruction_functions::and(address, addressing_mode, &mut registers, memory),
+            Opcode::ASL => instruction_functions::asl(address, addressing_mode, &mut registers, &mut flags, &mut memory),
+            Opcode::BIT => instruction_functions::bit(address, addressing_mode, &mut flags, memory),
             Opcode::BCC => i = instruction_functions::bcc(i, flags, instructions[i].label_name.clone(), labels.clone()),
             Opcode::BCS => i = instruction_functions::bcs(i, flags, instructions[i].label_name.clone(), labels.clone()),
             Opcode::BEQ => i = instruction_functions::beq(i, flags, instructions[i].label_name.clone(), labels.clone()),
@@ -39,33 +43,22 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::CLD => instruction_functions::cld(&mut flags),
             Opcode::CLI => instruction_functions::cli(&mut flags),
             Opcode::CLV => instruction_functions::clv(&mut flags),
-            Opcode::CMP => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
-            Opcode::CPX => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
-            Opcode::CPY => instruction_functions::cmp(instructions[i].value, instructions[i].addressing_mode, registers, &mut flags, memory),
-            Opcode::DEC => instruction_functions::dec(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::CMP => instruction_functions::cmp(address, addressing_mode, registers, &mut flags, memory),
+            Opcode::CPX => instruction_functions::cpx(address, addressing_mode, registers, &mut flags, memory),
+            Opcode::CPY => instruction_functions::cpy(address, addressing_mode, registers, &mut flags, memory),
+            Opcode::DEC => instruction_functions::dec(address, addressing_mode, registers, &mut memory),
             Opcode::DEX => instruction_functions::dex(&mut registers),
             Opcode::DEY => instruction_functions::dey(&mut registers),
-            Opcode::EOR => instruction_functions::eor(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
-            Opcode::INC => instruction_functions::dec(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::EOR => instruction_functions::eor(address, addressing_mode, memory, &mut registers),
+            Opcode::INC => instruction_functions::inc(address, addressing_mode, registers, &mut memory),
             Opcode::INX => instruction_functions::inx(&mut registers),
             Opcode::INY => instruction_functions::iny(&mut registers),
-
-            Opcode::JMP => {
-
-            }
-
-            Opcode::JSR => {
-
-            } 	
-
-            Opcode::LDA => instruction_functions::ldx(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
-            Opcode::LDX => instruction_functions::ldx(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
-            Opcode::LDY => instruction_functions::ldx(instructions[i].value, instructions[i].addressing_mode, memory, &mut registers),
-
-            Opcode::LSR => {
-
-            } 	
-
+            Opcode::JMP => i = instruction_functions::jmp(instructions[i].label_name.clone(), labels.clone()),
+            Opcode::JSR => i = instruction_functions::jsr(instructions[i].label_name.clone(), labels.clone()),
+            Opcode::LDA => instruction_functions::lda(address, addressing_mode, memory, &mut registers),
+            Opcode::LDX => instruction_functions::ldx(address, addressing_mode, memory, &mut registers),
+            Opcode::LDY => instruction_functions::ldy(address, addressing_mode, memory, &mut registers),
+            Opcode::LSR => instruction_functions::lsr(address, addressing_mode, &mut memory, &mut registers),
             Opcode::NOP => continue,
 
             Opcode::ORA => {
@@ -111,9 +104,9 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::SEC => instruction_functions::sec(&mut flags),
             Opcode::SED => instruction_functions::sed(&mut flags),
             Opcode::SEI => instruction_functions::sei(&mut flags),
-            Opcode::STA => instruction_functions::sta(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
-            Opcode::STX => instruction_functions::stx(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
-            Opcode::STY => instruction_functions::sty(instructions[i].value, instructions[i].addressing_mode, registers, &mut memory),
+            Opcode::STA => instruction_functions::sta(address, addressing_mode, registers, &mut memory),
+            Opcode::STX => instruction_functions::stx(address, addressing_mode, registers, &mut memory),
+            Opcode::STY => instruction_functions::sty(address, addressing_mode, registers, &mut memory),
             Opcode::TAX => instruction_functions::tax(&mut registers),
             Opcode::TAY => instruction_functions::tay(&mut registers),
             Opcode::TSX => instruction_functions::tsx(&mut registers),

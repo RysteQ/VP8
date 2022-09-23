@@ -1,8 +1,7 @@
 use std::cmp::Ordering;
-use std::ops::Add;
 
 use crate::analyze_code::AddressingMode;
-use crate::system::system::{self, Registers};
+use crate::system::system;
 
 pub fn adc(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
     let mut result: u16 = registers.get_acc() as u16;
@@ -296,6 +295,37 @@ pub fn ldy(address: u16, addressing_mode: AddressingMode, memory: system::Memory
         AddressingMode::Immediate => registers.set_y(address as u8),
         AddressingMode::ZeroPage | AddressingMode::Absolute => registers.set_y(memory.get_mem_cell_value(address as usize)),
         AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => registers.set_y(memory.get_mem_cell_value(address as usize + registers.get_x() as usize)),
+
+        _ => { }
+    }
+}
+
+pub fn jmp(label_name: String, label_names: Vec<(String, usize)>) -> usize {
+    for i in 0..label_names.len() {
+        if label_name == label_names[i].0 {
+            return i - 1;
+        }
+    }
+
+    panic!("Label {{{}}} not found", label_name);
+}
+
+// I know this is the exact same as jmp but if I need to make some changes to the jsr and not jmp it will save me time in the future
+pub fn jsr(label_name: String, label_names: Vec<(String, usize)>) -> usize {
+    for i in 0..label_names.len() {
+        if label_name == label_names[i].0 {
+            return i - 1;
+        }
+    }
+
+    panic!("Label {{{}}} not found", label_name);
+}
+
+pub fn lsr(address: u16, addressing_mode: AddressingMode, memory: &mut system::Memory, registers: &mut system::Registers) {
+    match addressing_mode {
+        AddressingMode::Implied => registers.set_acc(registers.get_acc() >> 1),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, memory.get_mem_cell_value(address as usize) >> 1),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => memory.set_mem_cell_value(address as usize + registers.get_x() as usize, memory.get_mem_cell_value(address as usize + registers.get_x() as usize) >> 1),
 
         _ => { }
     }
