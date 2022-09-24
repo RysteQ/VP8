@@ -24,6 +24,8 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
         let address: u16 = instructions[i].value;
         let addressing_mode: AddressingMode = instructions[i].addressing_mode;
 
+        let mut routines: Vec<usize> = vec![];
+
         match instructions[i].opcode {
             // todo macro this
             Opcode::ADC => instruction_functions::adc(address, addressing_mode, &mut registers, &mut flags, memory),
@@ -54,7 +56,6 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::INX => instruction_functions::inx(&mut registers),
             Opcode::INY => instruction_functions::iny(&mut registers),
             Opcode::JMP => i = instruction_functions::jmp(instructions[i].label_name.clone(), labels.clone()),
-            Opcode::JSR => i = instruction_functions::jsr(instructions[i].label_name.clone(), labels.clone()),
             Opcode::LDA => instruction_functions::lda(address, addressing_mode, memory, &mut registers),
             Opcode::LDX => instruction_functions::ldx(address, addressing_mode, memory, &mut registers),
             Opcode::LDY => instruction_functions::ldy(address, addressing_mode, memory, &mut registers),
@@ -65,7 +66,6 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::PHA => instruction_functions::pha(registers, &mut memory),
             Opcode::ROL => instruction_functions::ror(address, addressing_mode, &mut registers, memory, &mut flags),
             Opcode::ROR => instruction_functions::ror(address, addressing_mode, &mut registers, memory, &mut flags),
-            Opcode::RTS => todo!("TODO RTS"),
             Opcode::SBC => instruction_functions::sbc(address, addressing_mode, &mut registers, &mut flags, memory),
             Opcode::SEC => instruction_functions::sec(&mut flags),
             Opcode::SED => instruction_functions::sed(&mut flags),
@@ -80,6 +80,16 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::TXS => instruction_functions::txs(&mut registers),
             Opcode::TYA => instruction_functions::tya(&mut registers),
             Opcode::LABEL => continue,
+
+            Opcode::JSR => routines.push(instruction_functions::jsr(instructions[i].label_name.clone(), labels.clone())),
+
+            Opcode::RTS => {
+                if routines.len() == 0 {
+                    panic!("No routine ro return from");
+                }
+
+                i = routines.pop().unwrap();
+            }
         }
     }
 }
