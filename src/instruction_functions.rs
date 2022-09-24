@@ -331,6 +331,30 @@ pub fn lsr(address: u16, addressing_mode: AddressingMode, memory: &mut system::M
     }
 }
 
+pub fn pha() {
+
+}
+
+pub fn pla() {
+
+}
+
+pub fn ora() {
+
+}
+
+pub fn rol() {
+
+}
+
+pub fn ror() {
+
+}
+
+pub fn sbc() {
+    
+}
+
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {
     let low: u8 = memory.get_mem_cell_value(address as usize + x_register as usize);
     let high: u8 = memory.get_mem_cell_value(address as usize + x_register as usize + 1);

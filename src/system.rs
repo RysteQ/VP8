@@ -116,13 +116,15 @@ pub mod system {
     
     #[derive(Clone, Copy)]
     pub struct Memory {
-        mem_cell: [u8; 65536]
+        mem_cell: [u8; 65536],
+        stack_pointer: u16
     }
 
     impl Memory {
         pub fn init() -> Memory {
             Memory { 
-                mem_cell: [00; 65536]
+                mem_cell: [00; 65536],
+                stack_pointer: 0x01ff
             }
         }
 
@@ -130,8 +132,20 @@ pub mod system {
             self.mem_cell[index]
         }
 
+        pub fn get_stack_pointer(&self) -> u16 {
+            self.stack_pointer
+        }
+
         pub fn set_mem_cell_value(&mut self, index: usize, value: u8) {
             self.mem_cell[index] = value;
+        }
+
+        pub fn increment_stack_pointer(&mut self) {
+            self.stack_pointer = self.stack_pointer + 1;
+        }
+
+        pub fn decrement_stack_pointer(&mut self) {
+            self.stack_pointer = self.stack_pointer - 1;
         }
     }
 }
