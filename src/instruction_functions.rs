@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::ops::Add;
 
 use crate::analyze_code::AddressingMode;
 use crate::system::system;
@@ -331,28 +332,95 @@ pub fn lsr(address: u16, addressing_mode: AddressingMode, memory: &mut system::M
     }
 }
 
-pub fn pha() {
+pub fn pha(registers: system::Registers, memory: &mut system::Memory) {
+    if memory.get_stack_pointer() == 255 {
+        panic!("Stack error");
+    }
 
+    memory.set_mem_cell_value(memory.get_stack_pointer() as usize, registers.get_acc());
+    memory.decrement_stack_pointer();
 }
 
-pub fn pla() {
+pub fn pla(registers: &mut system::Registers, memory: &mut system::Memory) {
+    if memory.get_stack_pointer() == 0x01ff {
+        panic!("Stack error");   
+    }
 
+    registers.set_acc(memory.get_mem_cell_value(memory.get_stack_pointer() as usize));
+    memory.increment_stack_pointer();
 }
 
-pub fn ora() {
+pub fn ora(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory) {
+    match addressing_mode {
+        AddressingMode::Immediate => registers.set_acc(registers.get_acc() | address as u8),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => registers.set_acc(registers.get_acc() | memory.get_mem_cell_value(address as usize)),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => registers.set_acc(registers.get_acc() | memory.get_mem_cell_value(address as usize + registers.get_x() as usize)),
+        AddressingMode::AbsoluteY => registers.set_acc(registers.get_acc() | memory.get_mem_cell_value(address as usize + registers.get_y() as usize)),
+        AddressingMode::IndirectX => registers.set_acc(registers.get_acc() | memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_x()))),
+        AddressingMode::IndirectY => registers.set_acc(registers.get_acc() | memory.get_mem_cell_value(indirect_indexed_address(memory, address, registers.get_y()))),
 
+        _ => { }
+    }
 }
 
-pub fn rol() {
+pub fn rol(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory, flags: &mut system::Flags) {
+    let carry_flag_bit: bool = flags.get_carry_flag();
+    let mut to_rotate: u8 = 0;
 
+    match addressing_mode {
+        AddressingMode::Implied => to_rotate = registers.get_acc(),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => to_rotate = memory.get_mem_cell_value(address as usize),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => to_rotate = memory.get_mem_cell_value(address as usize + registers.get_x() as usize),
+
+        _ => { }
+    }
+
+    let new_carry_flag_bit: u8 = to_rotate & 0b10000000;
+
+    // Check if the value is zero and save the opposite of the value to the carry flag
+    flags.set_carry_flag(!(new_carry_flag_bit == 0));
+    registers.set_acc((to_rotate << 1) | (carry_flag_bit as u8 >> 7));
 }
 
-pub fn ror() {
+pub fn ror(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory, flags: &mut system::Flags) {
+    let carry_flag_bit: bool = flags.get_carry_flag();
+    let mut to_rotate: u8 = 0;
 
+    match addressing_mode {
+        AddressingMode::Implied => to_rotate = registers.get_acc(),
+        AddressingMode::ZeroPage | AddressingMode::Absolute => to_rotate = memory.get_mem_cell_value(address as usize),
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => to_rotate = memory.get_mem_cell_value(address as usize + registers.get_x() as usize),
+
+        _ => { }
+    }
+
+    let new_carry_flag_bit: u8 = to_rotate & 0b00000001;
+
+    // Check if the value is zero and save the opposite of the value to the carry flag
+    flags.set_carry_flag(!(new_carry_flag_bit == 0));
+    registers.set_acc((to_rotate >> 1) | ((carry_flag_bit as u8) << 1));
 }
 
-pub fn sbc() {
+pub fn sbc(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
+    let mut result: u16 = registers.get_acc() as u16;
     
+    match addressing_mode {
+        AddressingMode::Immediate => result -= address, 
+        AddressingMode::ZeroPage | AddressingMode::Absolute => result -= memory.get_mem_cell_value(address as usize) as u16,
+        AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => result -= memory.get_mem_cell_value(address as usize + registers.get_x() as usize) as u16,
+        AddressingMode::AbsoluteY => result -= memory.get_mem_cell_value(address as usize + registers.get_y() as usize) as u16,
+        AddressingMode::IndirectX => result -= memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_x())) as u16,
+        AddressingMode::IndirectY => result -= memory.get_mem_cell_value(indexed_indirect_address(memory, address, registers.get_y())) as u16,
+
+        _ => { }
+    }
+
+    if result > 255 {
+        flags.set_carry_flag(true);
+        registers.set_acc(result as u8);
+    } else {
+        registers.set_acc(result as u8);
+    }   
 }
 
 fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {

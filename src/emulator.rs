@@ -60,39 +60,13 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::LDY => instruction_functions::ldy(address, addressing_mode, memory, &mut registers),
             Opcode::LSR => instruction_functions::lsr(address, addressing_mode, &mut memory, &mut registers),
             Opcode::NOP => continue,
-
-            Opcode::ORA => {
-
-            }
-
-            Opcode::PLA => {
-
-            }
-
-            Opcode::PHA => {
-
-            }
-
-            Opcode::ROL => {
-
-            }
-
-            Opcode::ROR => {
-
-            }
-
-            Opcode::RTI => {
-
-            }
-
-            Opcode::RTS => {
-
-            }
-
-            Opcode::SBC => {
-
-            }
-
+            Opcode::ORA => instruction_functions::ora(address, addressing_mode, &mut registers, memory),
+            Opcode::PLA => instruction_functions::pla(&mut registers, &mut memory),
+            Opcode::PHA => instruction_functions::pha(registers, &mut memory),
+            Opcode::ROL => instruction_functions::ror(address, addressing_mode, &mut registers, memory, &mut flags),
+            Opcode::ROR => instruction_functions::ror(address, addressing_mode, &mut registers, memory, &mut flags),
+            Opcode::RTS => todo!("TODO RTS"),
+            Opcode::SBC => instruction_functions::sbc(address, addressing_mode, &mut registers, &mut flags, memory),
             Opcode::SEC => instruction_functions::sec(&mut flags),
             Opcode::SED => instruction_functions::sed(&mut flags),
             Opcode::SEI => instruction_functions::sei(&mut flags),
