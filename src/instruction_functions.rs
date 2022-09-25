@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::ops::Add;
 
 use crate::analyze_code::AddressingMode;
 use crate::system::system;

@@ -64,7 +64,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::ORA => instruction_functions::ora(address, addressing_mode, &mut registers, memory),
             Opcode::PLA => instruction_functions::pla(&mut registers, &mut memory),
             Opcode::PHA => instruction_functions::pha(registers, &mut memory),
-            Opcode::ROL => instruction_functions::ror(address, addressing_mode, &mut registers, memory, &mut flags),
+            Opcode::ROL => instruction_functions::rol(address, addressing_mode, &mut registers, memory, &mut flags),
             Opcode::ROR => instruction_functions::ror(address, addressing_mode, &mut registers, memory, &mut flags),
             Opcode::SBC => instruction_functions::sbc(address, addressing_mode, &mut registers, &mut flags, memory),
             Opcode::SEC => instruction_functions::sec(&mut flags),

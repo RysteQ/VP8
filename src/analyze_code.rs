@@ -31,7 +31,7 @@ pub enum AddressingMode {
     Implied
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Instruction {
     pub opcode: Opcode,
     pub addressing_mode: AddressingMode,
@@ -148,7 +148,7 @@ fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
         match addressing_mode {
             AddressingMode::Relative | AddressingMode::Implied => "FFFF",
 
-            _ => &parameters[2..4],
+            _ => &parameters[2..],
         }
     }, 16).unwrap()
 }
