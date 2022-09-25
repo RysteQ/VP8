@@ -10,5 +10,5 @@ Current TODO list:
 Future goals:
 - Refactor, a lot of it
 - Debug functionality
-- Hexdump functionalitt
+- Hexdump functionality
 - Optimizations if possible and as long as it doesn't hurt the code readability
