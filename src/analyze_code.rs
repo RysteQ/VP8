@@ -50,6 +50,7 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
         
         if opcode != Opcode::LABEL {
             let addressing_mode: AddressingMode = get_addressing_mode(operand);
+            println!("{:?}", addressing_mode);
             let value: u16 = get_operand_value(operand, addressing_mode);
             let mut label_name: String = String::new();
 
@@ -87,13 +88,15 @@ fn get_opcode(opcode_to_analyze: &str) -> Opcode {
 }
 
 fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
-    if parameters_to_analyze.is_empty() {
+    let to_analyze = remove_whitespaces(parameters_to_analyze);
+
+    if to_analyze.is_empty() {
         return AddressingMode::Implied;
     }
 
-    match parameters_to_analyze.chars().next().unwrap() {
+    match to_analyze.chars().next().unwrap() {
         '#' => {
-            if parameters_to_analyze.len() == 4 {
+            if to_analyze.len() == 4 {
                 AddressingMode::Immediate
             } else {
                 inform_error_and_exit("Error analyzing parameters", -1)
@@ -101,27 +104,27 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
         },
         
         '$' => {
-            match parameters_to_analyze.len() {
+            match to_analyze.len() {
                 3 => {
                     AddressingMode::ZeroPage
                 },
 
                 5 => {
-                    // todo macro this
-                    let nth = parameters_to_analyze.chars().nth(4).unwrap();
+                    let nth: char = to_analyze.chars().nth(4).unwrap();
                     match nth {
                         'X' => AddressingMode::ZeroPageX,
                         'Y' => AddressingMode::ZeroPageY,
+                        
                         _ => AddressingMode::Absolute
                     }
                 },
 
                 7 => {
-                    // todo macro this
-                    let nth = parameters_to_analyze.chars().nth(6).unwrap();
+                    let nth: char = to_analyze.chars().nth(6).unwrap();
                     match nth {
-                        'X' => AddressingMode::ZeroPageX,
-                        'Y' => AddressingMode::ZeroPageY,
+                        'X' => AddressingMode::AbsoluteX,
+                        'Y' => AddressingMode::AbsoluteY,
+                        
                         _ => inform_error_and_exit("Error analyzing parameters", -1)
                     }
                 }
@@ -131,7 +134,7 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
         },
 
         '(' => {
-            let nth = parameters_to_analyze.chars().nth(6).unwrap();
+            let nth = to_analyze.chars().nth(6).unwrap();
             match nth {
                 ')' => AddressingMode::IndirectX,
                 'Y' => AddressingMode::IndirectY,
@@ -143,12 +146,20 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
     }
 }
 
+fn remove_whitespaces(input: &str) -> String {
+    input.replace(" ", "")
+}
+
 fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
     u16::from_str_radix({
         match addressing_mode {
-            AddressingMode::Relative | AddressingMode::Implied => "FFFF",
-
-            _ => &parameters[2..],
+            AddressingMode::Immediate => &parameters[2..],
+        AddressingMode::ZeroPage | AddressingMode::Absolute => &parameters[1..],
+        AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => &parameters[1..].split(&",".to_string()).collect::<Vec<&str>>()[0],
+        AddressingMode::IndirectX => &parameters[2..].split(&",".to_string()).collect::<Vec<&str>>()[0],
+        AddressingMode::IndirectY => &parameters[1..].split(&")".to_string()).collect::<Vec<&str>>()[0],
+        
+        _ => "FFFF"
         }
     }, 16).unwrap()
 }

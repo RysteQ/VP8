@@ -12,7 +12,6 @@ pub fn read_file(path: String) -> Vec<String> {
         }
 
         if file_data_lines[i].contains(";") {
-            println!("DEBUG");
             let to_push: &str = file_data_lines[i].split(&";".to_string()).collect::<Vec<&str>>()[0];
             to_return.push(to_push.trim().to_string());
 
