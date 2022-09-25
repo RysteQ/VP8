@@ -2,6 +2,8 @@ use crate::analyze_code::AddressingMode;
 use crate::system::system;
 use crate::{analyze_code::{Instruction, Opcode}, instruction_functions};
 
+use rand::Rng;
+
 fn get_labels(instructions: Vec<Instruction>) -> Vec<(String, usize)> {
     let mut to_return: Vec<(String, usize)> = vec![];
 
@@ -18,28 +20,30 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     let mut registers: system::Registers = system::Registers::init();
     let mut flags: system::Flags = system::Flags::init();
     let mut memory: system::Memory = system::Memory::init();
+    let mut index: usize = 0;
     let labels: Vec<(String, usize)> = get_labels(instructions.clone());
 
-    for mut i in 0..instructions.len() {
-        let address: u16 = instructions[i].value;
-        let addressing_mode: AddressingMode = instructions[i].addressing_mode;
+
+    while index < instructions.len() {
+        let address: u16 = instructions[index].value;
+        let addressing_mode: AddressingMode = instructions[index].addressing_mode;
+        let label_name: String = instructions[index].label_name.clone();
 
         let mut routines: Vec<usize> = vec![];
 
-        match instructions[i].opcode {
-            // todo macro this
+        match instructions[index].opcode {
             Opcode::ADC => instruction_functions::adc(address, addressing_mode, &mut registers, &mut flags, memory),
             Opcode::AND => instruction_functions::and(address, addressing_mode, &mut registers, memory),
             Opcode::ASL => instruction_functions::asl(address, addressing_mode, &mut registers, &mut flags, &mut memory),
             Opcode::BIT => instruction_functions::bit(address, addressing_mode, &mut flags, memory),
-            Opcode::BCC => i = instruction_functions::bcc(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BCS => i = instruction_functions::bcs(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BEQ => i = instruction_functions::beq(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BMI => i = instruction_functions::bmi(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BNE => i = instruction_functions::bne(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BPL => i = instruction_functions::bpl(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BVC => i = instruction_functions::bvc(i, flags, instructions[i].label_name.clone(), labels.clone()),
-            Opcode::BVS => i = instruction_functions::bvs(i, flags, instructions[i].label_name.clone(), labels.clone()),
+            Opcode::BCC => index = instruction_functions::bcc(index, flags, label_name, labels.clone()),
+            Opcode::BCS => index = instruction_functions::bcs(index, flags, label_name, labels.clone()),
+            Opcode::BEQ => index = instruction_functions::beq(index, flags, label_name, labels.clone()),
+            Opcode::BMI => index = instruction_functions::bmi(index, flags, label_name, labels.clone()),
+            Opcode::BNE => index = instruction_functions::bne(index, flags, label_name, labels.clone()),
+            Opcode::BPL => index = instruction_functions::bpl(index, flags, label_name, labels.clone()),
+            Opcode::BVC => index = instruction_functions::bvc(index, flags, label_name, labels.clone()),
+            Opcode::BVS => index = instruction_functions::bvs(index, flags, label_name, labels.clone()),
             Opcode::BRK => break,
             Opcode::CLC => instruction_functions::clc(&mut flags),
             Opcode::CLD => instruction_functions::cld(&mut flags),
@@ -55,7 +59,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::INC => instruction_functions::inc(address, addressing_mode, registers, &mut memory),
             Opcode::INX => instruction_functions::inx(&mut registers),
             Opcode::INY => instruction_functions::iny(&mut registers),
-            Opcode::JMP => i = instruction_functions::jmp(instructions[i].label_name.clone(), labels.clone()),
+            Opcode::JMP => index = instruction_functions::jmp(instructions[index].label_name.clone(), labels.clone()),
             Opcode::LDA => instruction_functions::lda(address, addressing_mode, memory, &mut registers),
             Opcode::LDX => instruction_functions::ldx(address, addressing_mode, memory, &mut registers),
             Opcode::LDY => instruction_functions::ldy(address, addressing_mode, memory, &mut registers),
@@ -81,15 +85,20 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::TYA => instruction_functions::tya(&mut registers),
             Opcode::LABEL => continue,
 
-            Opcode::JSR => routines.push(instruction_functions::jsr(instructions[i].label_name.clone(), labels.clone())),
+            Opcode::JSR => routines.push(instruction_functions::jsr(instructions[index].label_name.clone(), labels.clone())),
 
             Opcode::RTS => {
                 if routines.len() == 0 {
                     panic!("No routine ro return from");
                 }
 
-                i = routines.pop().unwrap();
+                index = routines.pop().unwrap();
             }
         }
+
+        let random_number: u8 = rand::thread_rng().gen();
+        memory.set_mem_cell_value(0xfe, random_number);
+
+        index += 1;
     }
 }
