@@ -50,7 +50,6 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
         
         if opcode != Opcode::LABEL {
             let addressing_mode: AddressingMode = get_addressing_mode(operand);
-            println!("{:?}", addressing_mode);
             let value: u16 = get_operand_value(operand, addressing_mode);
             let mut label_name: String = String::new();
 

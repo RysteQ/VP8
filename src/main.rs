@@ -4,10 +4,11 @@ mod emulator;
 mod verifier;
 mod instruction_functions;
 mod system;
+mod window;
 
 fn main() {
     // Change this line if you want to run this for obvious reasons
-    let arguments: Vec<String> = vec!["lol".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];//args().collect::<Vec<String>>();
+    let arguments: Vec<String> = vec!["ignore_this".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];//args().collect::<Vec<String>>();
 
     if arguments.len() != 2 {
         println!("Please input a path to the file");
