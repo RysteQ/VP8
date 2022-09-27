@@ -36,7 +36,6 @@ pub struct Instruction {
     pub opcode: Opcode,
     pub addressing_mode: AddressingMode,
     pub value: u16,
-    pub size: u8,
     pub label_name: String
 }
 
@@ -61,15 +60,13 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
                 opcode,
                 addressing_mode,
                 value,
-                size: 1, // TODO: find a way to get the size of a given instruction
                 label_name
             });
         } else {
             to_return.push(Instruction { 
                 opcode, 
                 addressing_mode: AddressingMode::Absolute, 
-                value: 0, 
-                size: 1, 
+                value: 0,
                 label_name: instructions.clone()[i][0..&instructions.len() - 1].to_string()
             });
         }
