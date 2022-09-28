@@ -4,7 +4,6 @@ mod emulator;
 mod verifier;
 mod instruction_functions;
 mod system;
-mod window;
 
 fn main() {
     // Change this line if you want to run this for obvious reasons

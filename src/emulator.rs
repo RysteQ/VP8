@@ -23,7 +23,6 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     let mut index: usize = 0;
     let labels: Vec<(String, usize)> = get_labels(instructions.clone());
 
-
     while index < instructions.len() {
         let address: u16 = instructions[index].value;
         let addressing_mode: AddressingMode = instructions[index].addressing_mode;
