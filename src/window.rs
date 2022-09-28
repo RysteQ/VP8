@@ -42,20 +42,21 @@ pub mod window {
             }
         }
 
-        pub fn refresh(&self, screen_data: [char; 16384]) {
-
+        pub fn refresh(&mut self, screen_data: [char; 16384]) {
+            self.convert_colour_data_to_image(screen_data);
+            self.construct_image();
         }
 
         pub fn get_key_press(&self) -> char {
             self.key_event_result
         }
 
-        fn convert_colour_data_to_image(&mut self, data_to_convert: [u8; 16384]) {
+        fn convert_colour_data_to_image(&mut self, data_to_convert: [char; 16384]) {
             let colours: [(Colours, [u8; 3]); 12] = self.colours();
 
             for x in 0..128 {
                 for y in 0..128 {
-                    let current_pixel: u8 = data_to_convert[get_pixel!(x, y)];
+                    let current_pixel: u8 = data_to_convert[get_pixel!(x, y)] as u8;
                     self.change_colour(colours[current_pixel as usize].0, get_pixel!(x, y));
                 }
             }
@@ -79,6 +80,7 @@ pub mod window {
             self.image_data[index] = colour_to_change_to;
         }
 
+        // I won't change this because I cannot think of an easier way to represent 16 colours (there are currently 12) and their RGB values
         fn colours(&self) -> [(Colours, [u8; 3]); 12] {
             let colour_values: [(Colours, [u8; 3]); 12] = [
                 (Colours::Black, [0, 0, 0]), (Colours::Gray, [127, 127, 127]), (Colours::White, [255, 255, 255]),
