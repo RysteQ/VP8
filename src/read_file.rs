@@ -19,7 +19,6 @@ pub fn read_file(path: String) -> Vec<String> {
         }
 
         to_return.push(file_data_lines[i].clone());
-        // println!("{:?}", to_return);
     }
 
     to_return

@@ -1,9 +1,7 @@
-use num_derive::{FromPrimitive, ToPrimitive};
 use parse_display::{Display, FromStr};
 use std::u16;
 
-
-#[derive(Debug, Clone, Copy, FromPrimitive, ToPrimitive, Display, FromStr, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Display, FromStr, PartialEq, Eq)]
 pub enum Opcode {
     ADC, AND, ASL, BCC, BCS, BEQ, BIT, BMI,
     BNE, BPL, BRK, BVC, BVS, CLC, CLD, CLI,
@@ -28,7 +26,7 @@ pub enum AddressingMode {
     IndirectX,
     IndirectY,
     Relative,
-    Implied
+    Implied,
 }
 
 #[derive(Clone, Debug)]
@@ -62,14 +60,16 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
                 value,
                 label_name
             });
-        } else {
-            to_return.push(Instruction { 
-                opcode, 
-                addressing_mode: AddressingMode::Absolute, 
-                value: 0,
-                label_name: instructions.clone()[i][0..&instructions.len() - 1].to_string()
-            });
+
+            continue;
         }
+
+        to_return.push(Instruction { 
+            opcode, 
+            addressing_mode: AddressingMode::Absolute, 
+            value: 0,
+            label_name: instructions.clone()[i][0..&instructions.len() - 1].to_string()
+        });
     }
     
     to_return
@@ -93,10 +93,10 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
     match to_analyze.chars().next().unwrap() {
         '#' => {
             if to_analyze.len() == 4 {
-                AddressingMode::Immediate
-            } else {
-                inform_error_and_exit("Error analyzing parameters", -1)
+                return AddressingMode::Immediate;
             }
+
+            panic!("Error in analyze_code.rs at get_addressing_mode");
         },
         
         '$' => {
@@ -107,6 +107,7 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
 
                 5 => {
                     let nth: char = to_analyze.chars().nth(4).unwrap();
+
                     match nth {
                         'X' => AddressingMode::ZeroPageX,
                         'Y' => AddressingMode::ZeroPageY,
@@ -117,28 +118,30 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
 
                 7 => {
                     let nth: char = to_analyze.chars().nth(6).unwrap();
+
                     match nth {
                         'X' => AddressingMode::AbsoluteX,
                         'Y' => AddressingMode::AbsoluteY,
                         
-                        _ => inform_error_and_exit("Error analyzing parameters", -1)
+                        _ => panic!("Error in analyze_code.rs at get_addressing_mode")
                     }
                 }
 
-                _ => inform_error_and_exit("Error analyzing parameters", -1)
+                _ => panic!("Error in analyze_code.rs at get_addressing_mode")
             }
         },
 
         '(' => {
             let nth = to_analyze.chars().nth(6).unwrap();
+
             match nth {
                 ')' => AddressingMode::IndirectX,
                 'Y' => AddressingMode::IndirectY,
-                _ => inform_error_and_exit("Error analyzing parameters", -1)
+                _ => panic!("Error in analyze_code.rs at get_addressing_mode")
             }
         },
 
-        _ => inform_error_and_exit("Error analyzing parameters", -1)
+        _ => panic!("Error in analyze_code.rs at get_addressing_mode")
     }
 }
 
@@ -150,17 +153,12 @@ fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
     u16::from_str_radix({
         match addressing_mode {
             AddressingMode::Immediate => &parameters[2..],
-        AddressingMode::ZeroPage | AddressingMode::Absolute => &parameters[1..],
-        AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => &parameters[1..].split(&",".to_string()).collect::<Vec<&str>>()[0],
-        AddressingMode::IndirectX => &parameters[2..].split(&",".to_string()).collect::<Vec<&str>>()[0],
-        AddressingMode::IndirectY => &parameters[1..].split(&")".to_string()).collect::<Vec<&str>>()[0],
-        
-        _ => "FFFF"
+            AddressingMode::ZeroPage | AddressingMode::Absolute => &parameters[1..],
+            AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => &parameters[1..].split(&",".to_string()).collect::<Vec<&str>>()[0],
+            AddressingMode::IndirectX => &parameters[2..].split(&",".to_string()).collect::<Vec<&str>>()[0],
+            AddressingMode::IndirectY => &parameters[1..].split(&")".to_string()).collect::<Vec<&str>>()[0],
+            
+            _ => "FFFF"
         }
     }, 16).unwrap()
-}
-
-fn inform_error_and_exit(msg: &str, exit_code: i32) -> ! {
-    println!("{msg}");
-    std::process::exit(exit_code);
 }

@@ -128,10 +128,6 @@ pub mod system {
             }
         }
 
-        pub fn get_screen_memory(&self) -> [u8; 16384] {
-            self.mem_cell[256..16640].try_into().unwrap()
-        }
-
         pub fn get_mem_cell_value(&self, index: usize) -> u8 {
             self.mem_cell[index]
         }

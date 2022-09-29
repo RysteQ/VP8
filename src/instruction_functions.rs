@@ -307,7 +307,7 @@ pub fn jmp(label_name: String, label_names: Vec<(String, usize)>) -> usize {
         }
     }
 
-    panic!("Label {{{}}} not found", label_name);
+    panic!("Label {{{label_name}}} not found");
 }
 
 // I know this is the exact same as jmp but if I need to make some changes to the jsr and not jmp it will save me time in the future
@@ -318,7 +318,7 @@ pub fn jsr(label_name: String, label_names: Vec<(String, usize)>) -> usize {
         }
     }
 
-    panic!("Label {{{}}} not found", label_name);
+    panic!("Label {{{label_name}}} not found");
 }
 
 pub fn lsr(address: u16, addressing_mode: AddressingMode, memory: &mut system::Memory, registers: &mut system::Registers) {
@@ -333,7 +333,7 @@ pub fn lsr(address: u16, addressing_mode: AddressingMode, memory: &mut system::M
 
 pub fn pha(registers: system::Registers, memory: &mut system::Memory) {
     if memory.get_stack_pointer() == 255 {
-        panic!("Stack error");
+        panic!("Stack limit reached");
     }
 
     memory.set_mem_cell_value(memory.get_stack_pointer() as usize, registers.get_acc());
@@ -342,7 +342,7 @@ pub fn pha(registers: system::Registers, memory: &mut system::Memory) {
 
 pub fn pla(registers: &mut system::Registers, memory: &mut system::Memory) {
     if memory.get_stack_pointer() == 0x01ff {
-        panic!("Stack error");   
+        panic!("Stack limit reached");   
     }
 
     registers.set_acc(memory.get_mem_cell_value(memory.get_stack_pointer() as usize));
@@ -444,7 +444,7 @@ fn branch(flag_to_check: bool, expected_value: bool, label_name: String, labels:
             }
         }
 
-        panic!("Label {{{}}} does not exist", label_name);
+        panic!("Label {{{label_name}}} does not exist");
     }
 
     current_index
