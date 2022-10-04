@@ -124,7 +124,7 @@ pub mod system {
         pub fn init() -> Memory {
             Memory { 
                 mem_cell: [00; 65536],
-                stack_pointer: 0x01ff
+                stack_pointer: 0x4200
             }
         }
 
@@ -134,6 +134,10 @@ pub mod system {
 
         pub fn get_stack_pointer(&self) -> u16 {
             self.stack_pointer
+        }
+
+        pub fn get_screen_memory(&self) -> [u8; 16384] {
+            self.mem_cell[256..16640].try_into().unwrap()
         }
 
         pub fn set_mem_cell_value(&mut self, index: usize, value: u8) {
