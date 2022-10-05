@@ -5,7 +5,7 @@ pub mod window {
     extern crate piston;
 
     use piston::input::RenderArgs;
-    use graphics::Context;
+    use graphics::{Context, rectangle, Transformed};
     use opengl_graphics::{GlGraphics, OpenGL};
     use graphics::clear;
 
@@ -32,7 +32,17 @@ pub mod window {
             self.gl.draw(args.viewport(), |_c: Context, gl: &mut GlGraphics| {
                 clear([0.0, 0.0, 0.0, 1.0], gl);
 
-                // TODO
+                for x in 0..128 {
+                    for y in 0..128 {
+                        let transform = _c
+                            .transform
+                            .trans(x as f64, y as f64)
+                            .rot_rad(0.0)
+                            .trans(0.0, 0.0);
+
+                        rectangle(self.data_to_render[x + y * 128], rectangle::square(x as f64, y as f64, 4.0), transform, gl);
+                    }
+                }
             });
         }
 
@@ -47,7 +57,7 @@ pub mod window {
             if byte_to_analyze < 16 {
                 return colour_data[byte_to_analyze as usize]
             } else {
-                return colour_data[0];
+                return colour_data[(byte_to_analyze & 0b00001111) as usize];
             }
         }
     }

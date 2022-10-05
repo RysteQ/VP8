@@ -8,13 +8,10 @@ pub mod emulator {
     use piston::event_loop::{EventSettings, Events};
     use piston::input::RenderEvent;
     use piston::window::WindowSettings;
-    
     use opengl_graphics::OpenGL;
-    
     use rand::Rng;
     
     struct App {
-        pub open_gl: OpenGL,
         pub window: GlutinWindow,
         pub game_window: Window,
         pub event_control: Events,
@@ -25,18 +22,6 @@ pub mod emulator {
         pub memory: system::Memory,
         pub flags: system::Flags,
     }
-
-    fn get_labels(instructions: Vec<Instruction>) -> Vec<(String, usize)> {
-        let mut to_return: Vec<(String, usize)> = vec![];
-    
-        for i in 0..instructions.len() {
-            if instructions[i].opcode == Opcode::LABEL {
-                to_return.push((instructions[i].label_name.clone(), i));
-            }
-        }
-    
-        to_return
-    }
     
     pub fn start_emulator(instructions: Vec<Instruction>) {
         let mut vp8: Vp8System = Vp8System { 
@@ -46,8 +31,6 @@ pub mod emulator {
         };
     
         let mut gui_application: App = App {
-            open_gl: OpenGL::V3_2,
-
             window: WindowSettings::new(
                 "Virtual Processor 8",
                 [512, 512]
@@ -119,7 +102,7 @@ pub mod emulator {
                 Opcode::TXA => instruction_functions::txa(&mut vp8.registers),
                 Opcode::TXS => instruction_functions::txs(&mut vp8.registers),
                 Opcode::TYA => instruction_functions::tya(&mut vp8.registers),
-                Opcode::LABEL => continue,
+                Opcode::LABEL => { },
                 
                 Opcode::JSR => routines.push(instruction_functions::jsr(instructions[index].label_name.clone(), labels.clone())),
                 Opcode::RTS => {
@@ -139,11 +122,23 @@ pub mod emulator {
             if index != instructions.len() - 1 {
                 index += 1;
             } else {
-                println!("Reached end of instructions")
+                // println!("Reached end of instructions")
             }
 
             let random_number: u8 = rand::thread_rng().gen();
             vp8.memory.set_mem_cell_value(0xfe, random_number);
         }
+    }
+
+    fn get_labels(instructions: Vec<Instruction>) -> Vec<(String, usize)> {
+        let mut to_return: Vec<(String, usize)> = vec![];
+    
+        for i in 0..instructions.len() {
+            if instructions[i].opcode == Opcode::LABEL {
+                to_return.push((instructions[i].label_name.clone(), i));
+            }
+        }
+    
+        to_return
     }
 }

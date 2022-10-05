@@ -303,7 +303,7 @@ pub fn ldy(address: u16, addressing_mode: AddressingMode, memory: system::Memory
 pub fn jmp(label_name: String, label_names: Vec<(String, usize)>) -> usize {
     for i in 0..label_names.len() {
         if label_name == label_names[i].0 {
-            return i - 1;
+            return i
         }
     }
 

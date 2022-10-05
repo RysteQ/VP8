@@ -39,20 +39,16 @@ pub struct Instruction {
 
 pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
     let mut to_return: Vec<Instruction> = Vec::new();
-
+    
     for i in 0..instructions.len() {
         let opcode_str: &str = instructions[i][0..3].trim();
         let operand: &str = instructions[i][3..].trim();
-        let opcode: Opcode = get_opcode(opcode_str);
+        let opcode: Opcode = get_opcode(opcode_str, instructions[i].as_str());
         
         if opcode != Opcode::LABEL {
-            let addressing_mode: AddressingMode = get_addressing_mode(operand);
+            let addressing_mode: AddressingMode = get_addressing_mode(operand, opcode);
             let value: u16 = get_operand_value(operand, addressing_mode);
-            let mut label_name: String = String::new();
-
-            if addressing_mode == AddressingMode::Relative {
-                label_name = operand.to_string();
-            }
+            let label_name: String = instructions[i][4..instructions[i].len()].to_string();
 
             to_return.push(Instruction {
                 opcode,
@@ -63,28 +59,28 @@ pub fn get_instructions(instructions: Vec<String>) -> Vec<Instruction> {
 
             continue;
         }
-
+        
         to_return.push(Instruction { 
             opcode, 
             addressing_mode: AddressingMode::Absolute, 
             value: 0,
-            label_name: instructions.clone()[i][0..&instructions.len() - 1].to_string()
+            label_name: instructions[i][0..instructions[i].len() - 1].to_string()
         });
     }
     
     to_return
 }
 
-fn get_opcode(opcode_to_analyze: &str) -> Opcode {
-    if !opcode_to_analyze.ends_with(':') {
+fn get_opcode(opcode_to_analyze: &str, original_version: &str) -> Opcode {
+    if original_version.ends_with(':') == false{
         opcode_to_analyze.parse().unwrap()
     } else {
         Opcode::LABEL
     }
 }
 
-fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
-    let to_analyze = remove_whitespaces(parameters_to_analyze);
+fn get_addressing_mode(parameters_to_analyze: &str, opcode: Opcode) -> AddressingMode {
+    let to_analyze: String = remove_whitespaces(parameters_to_analyze);
 
     if to_analyze.is_empty() {
         return AddressingMode::Implied;
@@ -132,7 +128,7 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
         },
 
         '(' => {
-            let nth = to_analyze.chars().nth(6).unwrap();
+            let nth: char = to_analyze.chars().nth(6).unwrap();
 
             match nth {
                 ')' => AddressingMode::IndirectX,
@@ -141,7 +137,18 @@ fn get_addressing_mode(parameters_to_analyze: &str) -> AddressingMode {
             }
         },
 
-        _ => panic!("Error in analyze_code.rs at get_addressing_mode")
+        _ => {
+            let jump_operations: [Opcode; 10] = [
+                Opcode::JMP, Opcode::JSR, Opcode::BPL, Opcode::BMI, Opcode::BVC,
+                Opcode::BVS, Opcode::BCC, Opcode::BCS, Opcode::BNE, Opcode::BEQ
+            ];
+            
+            if opcode == Opcode::LABEL || jump_operations.contains(&opcode) {
+                return AddressingMode::Implied
+            }
+            
+            panic!("Error in analyze_code.rs at get_addressing_mode, operand value = {parameters_to_analyze}")
+        }
     }
 }
 
