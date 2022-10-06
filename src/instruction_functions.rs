@@ -142,7 +142,7 @@ pub mod instructions {
         match addressing_mode {
             AddressingMode::ZeroPage | AddressingMode::Absolute => memory.set_mem_cell_value(address as usize, registers.get_acc()),
             AddressingMode::ZeroPageX | AddressingMode::AbsoluteX => memory.set_mem_cell_value(address as usize, registers.get_acc()),
-            AddressingMode::AbsoluteY => memory.set_mem_cell_value(address as usize, registers.get_acc()),
+            AddressingMode::AbsoluteY => memory.set_mem_cell_value(address as usize + registers.get_y() as usize, registers.get_acc()),
             AddressingMode::IndirectX => memory.set_mem_cell_value(indexed_indirect_address(*memory, address, registers.get_x()), registers.get_acc()),
             AddressingMode::IndirectY => memory.set_mem_cell_value(indirect_indexed_address(*memory, address, registers.get_y()), registers.get_acc()),
             

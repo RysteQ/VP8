@@ -20,7 +20,5 @@ fn main() {
 
     if verifier::verify_data(_command_data.clone()) {
         emulator::emulator::start_emulator(_command_data);
-    } else {
-        panic!("Incorrect data");
     }
 }

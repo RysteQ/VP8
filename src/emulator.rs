@@ -33,7 +33,7 @@ pub mod emulator {
         let mut gui_application: App = App {
             window: WindowSettings::new(
                 "Virtual Processor 8",
-                [512, 512]
+                [256, 256]
             ).opengl(OpenGL::V3_2).exit_on_esc(true).build().unwrap(),
             
             game_window: Window::init(OpenGL::V3_2),
@@ -62,7 +62,6 @@ pub mod emulator {
                 Opcode::BPL => index = instructions::bpl(index, vp8.flags, label_name, labels.clone()),
                 Opcode::BVC => index = instructions::bvc(index, vp8.flags, label_name, labels.clone()),
                 Opcode::BVS => index = instructions::bvs(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BRK => break,
                 Opcode::CLC => instructions::clc(&mut vp8.flags),
                 Opcode::CLD => instructions::cld(&mut vp8.flags),
                 Opcode::CLI => instructions::cli(&mut vp8.flags),
@@ -101,6 +100,7 @@ pub mod emulator {
                 Opcode::TXS => instructions::txs(&mut vp8.registers),
                 Opcode::TYA => instructions::tya(&mut vp8.registers),
 
+                Opcode::BRK => { },
                 Opcode::LABEL => { },
                 Opcode::NOP => { },
                 

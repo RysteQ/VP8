@@ -17,39 +17,32 @@ pub fn verify_data(instructions: Vec<Instruction>) -> bool {
     for _i in 0..instructions.len() {
         let _opcode_to_check: Opcode = instructions[_i].opcode;
         let _addressing_mode: AddressingMode = instructions[_i].addressing_mode;
-        let mut allowed_command: bool = true;
 
         match _opcode_to_check {
-            Opcode::ASL | Opcode::LSR | Opcode::ROR | Opcode::ROL => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::Implied, AddressingMode::ZeroPage, AddressingMode::ZeroPageX, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
-            Opcode::DEC | Opcode::INC => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::ZeroPageX, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
-            Opcode::CPX | Opcode::CPY => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::Immediate, AddressingMode::ZeroPage, AddressingMode::Absolute]),
-            Opcode::STX => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::IndirectY, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
-            Opcode::STY => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::ZeroPageY, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
-            Opcode::BIT => allowed_command = allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::Absolute]),
+            Opcode::ASL | Opcode::LSR | Opcode::ROR | Opcode::ROL => allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::Implied, AddressingMode::ZeroPage, AddressingMode::ZeroPageX, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
+            Opcode::DEC | Opcode::INC => allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::ZeroPageX, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
+            Opcode::CPX | Opcode::CPY => allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::Immediate, AddressingMode::ZeroPage, AddressingMode::Absolute]),
+            Opcode::STX => allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::IndirectY, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
+            Opcode::STY => allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::ZeroPageY, AddressingMode::Absolute, AddressingMode::AbsoluteX]),
+            Opcode::BIT => allowed_addressing_mode_check(_addressing_mode, vec![AddressingMode::ZeroPage, AddressingMode::Absolute]),
 
             _ =>  {
                 if _only_implied_mode.contains(&_opcode_to_check) && _addressing_mode != AddressingMode::Implied {
-                    allowed_command = false;
+                    panic!("Opcode {{{_opcode_to_check}}} that only operates in implied mode does not fulfill the implied addressing mode, current addressing mode is {_addressing_mode}");
                 }
         
                 if _branch_instructions.contains(&_opcode_to_check) && _addressing_mode != AddressingMode::Relative {
-                    allowed_command = false;
+                    panic!("Opcode {{{_opcode_to_check}}} of type branch instruction does not fulfill the relative addressing mode, current addressing mode is {_addressing_mode}");
                 }
             }
-        }
-
-        if allowed_command == false {
-            return false;
         }
     }
 
     true
 }
 
-fn allowed_addressing_mode_check(_addressing_mode: AddressingMode, _allowed_addressing_modes: Vec<AddressingMode>) -> bool {
-    if !_allowed_addressing_modes.contains(&_addressing_mode) {
-        false;
-    } 
-
-    true
+fn allowed_addressing_mode_check(_addressing_mode: AddressingMode, _allowed_addressing_modes: Vec<AddressingMode>) {
+    if _allowed_addressing_modes.contains(&_addressing_mode) == false {
+        panic!("Current addressing mode is {_addressing_mode} while allowed addressing modes are {:?}", _allowed_addressing_modes);
+    }
 }

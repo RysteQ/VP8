@@ -15,7 +15,7 @@ pub mod analyzer {
         LABEL,
     }
     
-    #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+    #[derive(Debug, PartialEq, Eq, Clone, Copy, Display)]
     pub enum AddressingMode {
         Immediate,
         ZeroPage,
@@ -49,8 +49,12 @@ pub mod analyzer {
             if opcode != Opcode::LABEL {
                 let addressing_mode: AddressingMode = get_addressing_mode(operand, opcode);
                 let value: u16 = get_operand_value(operand, addressing_mode);
-                let label_name: String = instructions[i][4..instructions[i].len()].to_string();
+                let mut label_name: String = String::new();
     
+                if instructions[i].len() > 3 {
+                    label_name = instructions[i][4..instructions[i].len()].to_string();
+                }
+
                 to_return.push(Instruction {
                     opcode,
                     addressing_mode,
@@ -143,7 +147,7 @@ pub mod analyzer {
                 ];
                 
                 if opcode == Opcode::LABEL || jump_operations.contains(&opcode) {
-                    return AddressingMode::Implied
+                    return AddressingMode::Relative
                 }
                 
                 panic!("Error in analyze_code.rs at get_addressing_mode, operand value = {parameters_to_analyze}")
