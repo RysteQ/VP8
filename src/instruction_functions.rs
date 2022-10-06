@@ -20,10 +20,9 @@ pub mod instructions {
     
         if result > 255 {
             flags.set_carry_flag(true);
-            registers.set_acc(result as u8);
-        } else {
-            registers.set_acc(result as u8);
         }
+
+        registers.set_acc(result as u8);
     }
     
     pub fn and(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory) {
@@ -417,10 +416,9 @@ pub mod instructions {
     
         if result > 255 {
             flags.set_carry_flag(true);
-            registers.set_acc(result as u8);
-        } else {
-            registers.set_acc(result as u8);
-        }   
+        }
+        
+        registers.set_acc(result as u8);
     }
     
     fn indexed_indirect_address(memory: system::Memory, address: u16, x_register: u8) -> usize {

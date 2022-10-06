@@ -104,6 +104,7 @@ pub mod emulator {
                 Opcode::LABEL => { },
                 Opcode::NOP => { },
                 
+                // TODO: work on routines
                 Opcode::JSR => routines.push(instructions::jsr(instructions[index].label_name.clone(), labels.clone())),
                 Opcode::RTS => {
                     if routines.len() == 0 {

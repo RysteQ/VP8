@@ -82,6 +82,7 @@ pub mod analyzer {
         }
     }
     
+    // TODO: Fix this junk once more
     fn get_addressing_mode(parameters_to_analyze: &str, opcode: Opcode) -> AddressingMode {
         let to_analyze: String = remove_whitespaces(parameters_to_analyze);
     
