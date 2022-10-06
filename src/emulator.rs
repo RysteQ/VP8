@@ -41,13 +41,13 @@ pub mod emulator {
         };
 
         let labels: Vec<(String, usize)> = get_labels(instructions.clone());
+        let mut routines: Vec<usize> = vec![];
         let mut index: usize = 0;
     
         while let Some(e) = gui_application.event_control.next(&mut gui_application.window) {
             let address: u16 = instructions[index].value;
             let addressing_mode: AddressingMode = instructions[index].addressing_mode;
             let label_name: String = instructions[index].label_name.clone();
-            let mut routines: Vec<usize> = vec![];
             
             match instructions[index].opcode {
                 Opcode::ADC => instructions::adc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
@@ -104,11 +104,14 @@ pub mod emulator {
                 Opcode::LABEL => { },
                 Opcode::NOP => { },
                 
-                // TODO: work on routines
-                Opcode::JSR => routines.push(instructions::jsr(instructions[index].label_name.clone(), labels.clone())),
+                Opcode::JSR => {
+                    routines.push(index);
+                    index = instructions::jmp(instructions[index].label_name.clone(), labels.clone());
+                },
+
                 Opcode::RTS => {
                     if routines.len() == 0 {
-                        panic!("No routine ro return from");
+                        panic!("No routine ro return from, instruction {:?} at {index}", instructions[index]);
                     }
     
                     index = routines.pop().unwrap();

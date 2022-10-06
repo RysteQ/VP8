@@ -303,18 +303,7 @@ pub mod instructions {
     pub fn jmp(label_name: String, label_names: Vec<(String, usize)>) -> usize {
         for i in 0..label_names.len() {
             if label_name == label_names[i].0 {
-                return i
-            }
-        }
-    
-        panic!("Label {{{label_name}}} not found");
-    }
-    
-    // I know this is the exact same as jmp but if I need to make some changes to the jsr and not jmp it will save me time in the future
-    pub fn jsr(label_name: String, label_names: Vec<(String, usize)>) -> usize {
-        for i in 0..label_names.len() {
-            if label_name == label_names[i].0 {
-                return i - 1;
+                return label_names[i].1
             }
         }
     
@@ -417,7 +406,7 @@ pub mod instructions {
         if result > 255 {
             flags.set_carry_flag(true);
         }
-        
+
         registers.set_acc(result as u8);
     }
     
@@ -439,7 +428,7 @@ pub mod instructions {
         if flag_to_check == expected_value {
             for i in 0..labels.len() {
                 if label_name == labels[i].0 {
-                    return labels[i].1 - 1;
+                    return labels[i].1
                 }
             }
     
