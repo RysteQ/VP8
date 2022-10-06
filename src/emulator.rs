@@ -1,8 +1,8 @@
 pub mod emulator {
-    use crate::analyze_code::AddressingMode;
+    use crate::analyze_code::analyzer::AddressingMode;
     use crate::system::system;
     use crate::window::window::Window;
-    use crate::{analyze_code::{Instruction, Opcode}, instruction_functions};
+    use crate::{analyze_code::analyzer::{Instruction, Opcode}, instruction_functions::instructions};
     
     use glutin_window::GlutinWindow;
     use piston::event_loop::{EventSettings, Events};
@@ -37,7 +37,6 @@ pub mod emulator {
             ).opengl(OpenGL::V3_2).exit_on_esc(true).build().unwrap(),
             
             game_window: Window::init(OpenGL::V3_2),
-
             event_control: Events::new(EventSettings::new())
         };
 
@@ -51,60 +50,61 @@ pub mod emulator {
             let mut routines: Vec<usize> = vec![];
             
             match instructions[index].opcode {
-                Opcode::ADC => instruction_functions::adc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::AND => instruction_functions::and(address, addressing_mode, &mut vp8.registers, vp8.memory),
-                Opcode::ASL => instruction_functions::asl(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, &mut vp8.memory),
-                Opcode::BIT => instruction_functions::bit(address, addressing_mode, &mut vp8.flags, vp8.memory),
-                Opcode::BCC => index = instruction_functions::bcc(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BCS => index = instruction_functions::bcs(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BEQ => index = instruction_functions::beq(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BMI => index = instruction_functions::bmi(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BNE => index = instruction_functions::bne(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BPL => index = instruction_functions::bpl(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BVC => index = instruction_functions::bvc(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BVS => index = instruction_functions::bvs(index, vp8.flags, label_name, labels.clone()),
+                Opcode::ADC => instructions::adc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::AND => instructions::and(address, addressing_mode, &mut vp8.registers, vp8.memory),
+                Opcode::ASL => instructions::asl(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, &mut vp8.memory),
+                Opcode::BIT => instructions::bit(address, addressing_mode, &mut vp8.flags, vp8.memory),
+                Opcode::BCC => index = instructions::bcc(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BCS => index = instructions::bcs(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BEQ => index = instructions::beq(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BMI => index = instructions::bmi(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BNE => index = instructions::bne(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BPL => index = instructions::bpl(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BVC => index = instructions::bvc(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BVS => index = instructions::bvs(index, vp8.flags, label_name, labels.clone()),
                 Opcode::BRK => break,
-                Opcode::CLC => instruction_functions::clc(&mut vp8.flags),
-                Opcode::CLD => instruction_functions::cld(&mut vp8.flags),
-                Opcode::CLI => instruction_functions::cli(&mut vp8.flags),
-                Opcode::CLV => instruction_functions::clv(&mut vp8.flags),
-                Opcode::CMP => instruction_functions::cmp(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::CPX => instruction_functions::cpx(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::CPY => instruction_functions::cpy(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::DEC => instruction_functions::dec(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::DEX => instruction_functions::dex(&mut vp8.registers),
-                Opcode::DEY => instruction_functions::dey(&mut vp8.registers),
-                Opcode::EOR => instruction_functions::eor(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::INC => instruction_functions::inc(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::INX => instruction_functions::inx(&mut vp8.registers),
-                Opcode::INY => instruction_functions::iny(&mut vp8.registers),
-                Opcode::JMP => index = instruction_functions::jmp(instructions[index].label_name.clone(), labels.clone()),
-                Opcode::LDA => instruction_functions::lda(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::LDX => instruction_functions::ldx(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::LDY => instruction_functions::ldy(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::LSR => instruction_functions::lsr(address, addressing_mode, &mut vp8.memory, &mut vp8.registers),
-                Opcode::NOP => continue,
-                Opcode::ORA => instruction_functions::ora(address, addressing_mode, &mut vp8.registers, vp8.memory),
-                Opcode::PLA => instruction_functions::pla(&mut vp8.registers, &mut vp8.memory),
-                Opcode::PHA => instruction_functions::pha(vp8.registers, &mut vp8.memory),
-                Opcode::ROL => instruction_functions::rol(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
-                Opcode::ROR => instruction_functions::ror(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
-                Opcode::SBC => instruction_functions::sbc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::SEC => instruction_functions::sec(&mut vp8.flags),
-                Opcode::SED => instruction_functions::sed(&mut vp8.flags),
-                Opcode::SEI => instruction_functions::sei(&mut vp8.flags),
-                Opcode::STA => instruction_functions::sta(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::STX => instruction_functions::stx(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::STY => instruction_functions::sty(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::TAX => instruction_functions::tax(&mut vp8.registers),
-                Opcode::TAY => instruction_functions::tay(&mut vp8.registers),
-                Opcode::TSX => instruction_functions::tsx(&mut vp8.registers),
-                Opcode::TXA => instruction_functions::txa(&mut vp8.registers),
-                Opcode::TXS => instruction_functions::txs(&mut vp8.registers),
-                Opcode::TYA => instruction_functions::tya(&mut vp8.registers),
+                Opcode::CLC => instructions::clc(&mut vp8.flags),
+                Opcode::CLD => instructions::cld(&mut vp8.flags),
+                Opcode::CLI => instructions::cli(&mut vp8.flags),
+                Opcode::CLV => instructions::clv(&mut vp8.flags),
+                Opcode::CMP => instructions::cmp(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::CPX => instructions::cpx(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::CPY => instructions::cpy(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::DEC => instructions::dec(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::DEX => instructions::dex(&mut vp8.registers),
+                Opcode::DEY => instructions::dey(&mut vp8.registers),
+                Opcode::EOR => instructions::eor(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::INC => instructions::inc(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::INX => instructions::inx(&mut vp8.registers),
+                Opcode::INY => instructions::iny(&mut vp8.registers),
+                Opcode::JMP => index = instructions::jmp(instructions[index].label_name.clone(), labels.clone()),
+                Opcode::LDA => instructions::lda(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::LDX => instructions::ldx(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::LDY => instructions::ldy(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::LSR => instructions::lsr(address, addressing_mode, &mut vp8.memory, &mut vp8.registers),
+                Opcode::ORA => instructions::ora(address, addressing_mode, &mut vp8.registers, vp8.memory),
+                Opcode::PLA => instructions::pla(&mut vp8.registers, &mut vp8.memory),
+                Opcode::PHA => instructions::pha(vp8.registers, &mut vp8.memory),
+                Opcode::ROL => instructions::rol(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
+                Opcode::ROR => instructions::ror(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
+                Opcode::SBC => instructions::sbc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::SEC => instructions::sec(&mut vp8.flags),
+                Opcode::SED => instructions::sed(&mut vp8.flags),
+                Opcode::SEI => instructions::sei(&mut vp8.flags),
+                Opcode::STA => instructions::sta(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::STX => instructions::stx(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::STY => instructions::sty(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::TAX => instructions::tax(&mut vp8.registers),
+                Opcode::TAY => instructions::tay(&mut vp8.registers),
+                Opcode::TSX => instructions::tsx(&mut vp8.registers),
+                Opcode::TXA => instructions::txa(&mut vp8.registers),
+                Opcode::TXS => instructions::txs(&mut vp8.registers),
+                Opcode::TYA => instructions::tya(&mut vp8.registers),
+
                 Opcode::LABEL => { },
+                Opcode::NOP => { },
                 
-                Opcode::JSR => routines.push(instruction_functions::jsr(instructions[index].label_name.clone(), labels.clone())),
+                Opcode::JSR => routines.push(instructions::jsr(instructions[index].label_name.clone(), labels.clone())),
                 Opcode::RTS => {
                     if routines.len() == 0 {
                         panic!("No routine ro return from");
@@ -119,14 +119,21 @@ pub mod emulator {
                 gui_application.game_window.update(r);
             }
     
-            if index != instructions.len() - 1 {
-                index += 1;
-            } else {
-                // println!("Reached end of instructions")
-            }
+            index = increment_instruction_index(index, instructions.len());
+            random_number_in_memory(&mut vp8.memory);
+        }
+    }
 
-            let random_number: u8 = rand::thread_rng().gen();
-            vp8.memory.set_mem_cell_value(0xfe, random_number);
+    fn random_number_in_memory(memory: &mut system::Memory) {
+        let random_number: u8 = rand::thread_rng().gen();
+        memory.set_mem_cell_value(0xfe, random_number);
+    }
+
+    fn increment_instruction_index(index: usize, instructions_length: usize) -> usize {
+        if index != instructions_length - 1 {
+            index + 1
+        } else {
+            index
         }
     }
 
