@@ -100,7 +100,8 @@ pub mod emulator {
                 Opcode::TXS => instructions::txs(&mut vp8.registers),
                 Opcode::TYA => instructions::tya(&mut vp8.registers),
 
-                Opcode::BRK => { },
+                Opcode::BRK => index -= 1,
+
                 Opcode::LABEL => { },
                 Opcode::NOP => { },
                 
