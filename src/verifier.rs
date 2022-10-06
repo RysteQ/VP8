@@ -1,17 +1,17 @@
 use crate::analyze_code::analyzer::{Instruction, Opcode, AddressingMode};
 
 pub fn verify_data(instructions: Vec<Instruction>) -> bool {
-    let _only_implied_mode: [Opcode; 24] = [
+    let _only_implied_mode: [Opcode; 22] = [
         Opcode::TXS, Opcode::TSX, Opcode::PHA, Opcode::PLA, Opcode::RTS,
         Opcode::TAX, Opcode::TXA, Opcode::DEX, Opcode::INX, Opcode::TAY, 
         Opcode::TYA, Opcode::DEY, Opcode::INY, Opcode::NOP, Opcode::CLC, 
         Opcode::SEC, Opcode::CLI, Opcode::SEI, Opcode::CLV, Opcode::CLD, 
-        Opcode::SED, Opcode::BRK, Opcode::JMP, Opcode::JSR
+        Opcode::SED, Opcode::BRK
     ];
 
-    let _branch_instructions: [Opcode; 8] = [
+    let _branch_instructions: [Opcode; 10] = [
         Opcode::BPL, Opcode::BMI, Opcode::BVC, Opcode::BVS, Opcode::BCC,
-        Opcode::BCS, Opcode::BNE, Opcode::BEQ
+        Opcode::BCS, Opcode::BNE, Opcode::BEQ, Opcode::JMP, Opcode::JSR
     ];
 
     for _i in 0..instructions.len() {
