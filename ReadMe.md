@@ -1,15 +1,39 @@
 # VP8
 
-VP8 will be a virtual computer that you can code in 6502 assembly
+VP8 is a virtual 8 bit computer that runs in 6502 assembly created in rust.
 
-Current TODO list:
-- ~~Finish the instruction_functions.rs file~~
-- ~~Make the read_file.rs able to recognise empty lines and comments~~
-- ~~Find a way to have a some sort of GUI for the output (128x128 resolution)~~
-- Debug
+**Table of contents**
+- **[Features](#features)**
+- **[Memory map](#memory-map)**
+- **[Current TODO list](#todo)**
+- **[Ways to contribute](#ways-to-contribute)**
 
-Future goals:
-- Refactor, a lot of it
-- Debug functionality
-- Hexdump functionality
-- Optimizations if possible and as long as it doesn't hurt the code readability
+## Features
+
+This projects has two very important features. 
+
+The first main feature this project has is a fully working (well, as of now not that much) screen that is 128 tall by 128 wide with 16 colours although you can modify it to go up to 256 colours if you so desire.
+
+The second feature has is that the program is not saved in the 64 kilobytes of virtual RAM, the program memory is seperate from the RAM so your code can be as big as you want.
+
+### Memory map
+
+The memory map is simple, the first 256 bytes (\$0000 - \$00FF) is the zero page, the rest 16 kilobytes after that (\$01FF - \$40FF) is reserved for screen memory and the rest of memory is reserved for whatever you want to store with it.
+
+* The stack is not mentioned since I will do some minor changes to it later
+
+### TODO
+
+My current TODO list is the following
+
+1) Get the GUI to work properly
+2) Add full flag functionality and PHP / PLP instructions
+3) Test
+
+It goes without saying that my others goals that I do not have in my TODO list because I find quite obvious is to increase perfomance but most importantly increase code readability even if it hurts perfomance a little bit.
+
+### Ways to contribute
+
+Since I am not experienced in rust yet I would greatly appreciate your help in this project by helping me in the project. What I would find amazing is for people to make the code smaller or even faster and if someone is up to the task they may even add a whole new feature.
+
+But one thing is for certain, all help is amazing.
