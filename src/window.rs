@@ -14,21 +14,19 @@ macro_rules! pixel_index {
 
 pub struct Window {
     window: PistonWindow,
-    data_to_render: [[f32; 4]; 16384],
+    data_to_render: [u8; 16384],
 }
 
 impl Window {
     pub fn init() -> Window {
         Window {
             window: WindowSettings::new("Hello World!", [512; 2]).build().unwrap(),
-            data_to_render: [[1.0; 4]; 16384]
+            data_to_render: [0; 16384]
         }
     }
 
     pub fn set_screen_memory_data(&mut self, data: [u8; 16384]) {
-        for i in 0..16384 {
-            self.data_to_render[i] = Window::convert_bytes_to_colours(data[i]);
-        }
+        self.data_to_render = data;
     }
 
     pub fn update(&mut self, e: Event) {
@@ -37,7 +35,9 @@ impl Window {
             
             for x in 0..128 {
                 for y in 0..128 {
-                    rectangle(self.data_to_render[pixel_index!(x, y)], pixel_coordinates!(x, y), c.transform, g);
+                    let rgb_data: [f32; 4] = Window::convert_bytes_to_colours(self.data_to_render[pixel_index!(x, y)]);
+
+                    rectangle(rgb_data, pixel_coordinates!(x, y), c.transform, g);
                 }
             }
         });

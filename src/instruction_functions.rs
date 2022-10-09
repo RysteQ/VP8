@@ -300,9 +300,9 @@ pub fn ldy(address: u16, addressing_mode: AddressingMode, memory: system::Memory
 }
 
 pub fn jmp(label_name: String, label_names: Vec<(String, usize)>) -> usize {
-    for i in 0..label_names.len() {
-        if label_name == label_names[i].0 {
-            return label_names[i].1
+    for i in label_names.iter() {
+        if label_name == i.0 {
+            return i.1
         }
     }
 
@@ -425,9 +425,9 @@ fn indirect_indexed_address(memory: system::Memory, address: u16, y_register: u8
 
 fn branch(flag_to_check: bool, expected_value: bool, label_name: String, labels: Vec<(String, usize)>, current_index: usize) -> usize {
     if flag_to_check == expected_value {
-        for i in 0..labels.len() {
-            if label_name == labels[i].0 {
-                return labels[i].1
+        for i in labels.iter() {
+            if label_name == i.0 {
+                return i.1
             }
         }
 
