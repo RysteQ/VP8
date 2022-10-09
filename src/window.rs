@@ -1,23 +1,15 @@
 pub mod window {
-    extern crate glutin_window;
-    extern crate graphics;
-    extern crate opengl_graphics;
-    extern crate piston;
-
-    use piston::input::RenderArgs;
-    use graphics::{Context, rectangle, Transformed};
-    use opengl_graphics::{GlGraphics, OpenGL};
-    use graphics::clear;
-
+    use piston_window::{self, Event, clear, rectangle, PistonWindow, WindowSettings};
+    
     pub struct Window {
-        gl: GlGraphics,
+        window: PistonWindow,
         data_to_render: [[f32; 4]; 16384],
     }
 
     impl Window {
-        pub fn init(open_gl: OpenGL) -> Window {
+        pub fn init() -> Window {
             Window {
-                gl: GlGraphics::new(open_gl),
+                window: WindowSettings::new("Hello World!", [512; 2]).build().unwrap(),
                 data_to_render: [[1.0; 4]; 16384]
             }
         }
@@ -28,28 +20,20 @@ pub mod window {
             }
         }
 
-        pub fn update(&mut self, args: RenderArgs) {
-            self.gl.draw(args.viewport(), |_c: Context, gl: &mut GlGraphics| {
-                clear([0.0, 0.0, 0.0, 1.0], gl);
-
+        pub fn update(&mut self, e: Event) {
+            self.window.draw_2d(&e, |c, g, _| {
+                clear([0.5, 0.5, 0.5, 1.0], g);
+                
                 for x in 0..128 {
                     for y in 0..128 {
-                        let pixel: [[f64; 3]; 2] = Window::calculate_pixel(x as f64, y as f64, _c);
-                        let square: [f64; 4] = rectangle::square(x as f64, y as f64, 2.0);
-
-                        rectangle(self.data_to_render[x + y * 128], square, pixel, gl);
+                        rectangle(self.data_to_render[x + y * 128], [(x * 4) as f64, (y * 4) as f64, (x + 4) as f64, (y + 4) as f64], c.transform, g);
                     }
                 }
             });
         }
 
-        fn calculate_pixel(x: f64, y: f64, _c: Context) -> [[f64; 3]; 2] {
-            let transform: [[f64; 3]; 2] = _c
-                .transform
-                .trans(x, y)
-                .rot_rad(0.0);
-
-            transform
+        pub fn get_window_next(&mut self) -> Option<Event> {
+            return self.window.next()
         }
 
         fn convert_bytes_to_colours(byte_to_analyze: u8) -> [f32; 4] {

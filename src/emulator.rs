@@ -3,19 +3,7 @@ pub mod emulator {
     use crate::system::system;
     use crate::window::window::Window;
     use crate::{analyze_code::analyzer::{Instruction, Opcode}, instruction_functions::instructions};
-    
-    use glutin_window::GlutinWindow;
-    use piston::event_loop::{EventSettings, Events};
-    use piston::input::RenderEvent;
-    use piston::window::WindowSettings;
-    use opengl_graphics::OpenGL;
     use rand::Rng;
-    
-    struct App {
-        pub window: GlutinWindow,
-        pub game_window: Window,
-        pub event_control: Events,
-    }
 
     struct Vp8System {
         pub registers: system::Registers,
@@ -30,21 +18,13 @@ pub mod emulator {
             memory: system::Memory::init()
         };
     
-        let mut gui_application: App = App {
-            window: WindowSettings::new(
-                "Virtual Processor 8",
-                [256, 256]
-            ).opengl(OpenGL::V3_2).exit_on_esc(true).build().unwrap(),
-            
-            game_window: Window::init(OpenGL::V3_2),
-            event_control: Events::new(EventSettings::new())
-        };
+        let mut game_window: Window = Window::init();
 
         let labels: Vec<(String, usize)> = get_labels(instructions.clone());
         let mut routines: Vec<usize> = vec![];
         let mut index: usize = 0;
     
-        while let Some(e) = gui_application.event_control.next(&mut gui_application.window) {
+        while let Some(e) = game_window.get_window_next() {
             let address: u16 = instructions[index].value;
             let addressing_mode: AddressingMode = instructions[index].addressing_mode;
             let label_name: String = instructions[index].label_name.clone();
@@ -119,10 +99,8 @@ pub mod emulator {
                 }
             }
 
-            if let Some(r) = e.render_args() {
-                gui_application.game_window.set_screen_memory_data(vp8.memory.get_screen_memory());
-                gui_application.game_window.update(r);
-            }
+            game_window.set_screen_memory_data(vp8.memory.get_screen_memory());
+            game_window.update(e);
     
             index = increment_instruction_index(index, instructions.len());
             random_number_in_memory(&mut vp8.memory);
