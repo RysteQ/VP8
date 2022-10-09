@@ -1,5 +1,17 @@
 use piston_window::{self, Event, clear, rectangle, PistonWindow, WindowSettings};
 
+macro_rules! pixel_coordinates {
+    ($x: expr, $y: expr) => {
+        [($x * 4) as f64, ($y * 4) as f64, ($x + 4) as f64, ($y + 4) as f64]
+    };
+}
+
+macro_rules! pixel_index {
+    ($x: expr, $y: expr) => {
+        $x + $y * 128
+    };
+}
+
 pub struct Window {
     window: PistonWindow,
     data_to_render: [[f32; 4]; 16384],
@@ -25,7 +37,7 @@ impl Window {
             
             for x in 0..128 {
                 for y in 0..128 {
-                    rectangle(self.data_to_render[x + y * 128], [(x * 4) as f64, (y * 4) as f64, (x + 4) as f64, (y + 4) as f64], c.transform, g);
+                    rectangle(self.data_to_render[pixel_index!(x, y)], pixel_coordinates!(x, y), c.transform, g);
                 }
             }
         });
