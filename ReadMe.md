@@ -28,7 +28,8 @@ My current TODO list is the following
 
 1) Get the GUI to work properly
 2) Add full flag functionality and PHP / PLP instructions
-3) Test
+3) Make the Readme.md look better with images / GIFs and stuff like that
+4) Test the program for any hidden bugs that I may very well have missed
 
 It goes without saying that my others goals that I do not have in my TODO list because I find quite obvious is to increase perfomance but most importantly increase code readability even if it hurts perfomance a little bit.
 
