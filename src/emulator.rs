@@ -3,6 +3,7 @@ pub mod emulator {
     use crate::system::system;
     use crate::window::Window;
     use crate::{analyze_code::{Instruction, Opcode}, instruction_functions as instruction};
+    use piston_window::{PressEvent, Button};
     use rand::Rng;
 
     struct Vp8System {
@@ -100,10 +101,14 @@ pub mod emulator {
             }
 
             game_window.set_screen_memory_data(vp8.memory.get_screen_memory());
-            game_window.update(e);
+            game_window.update(e.clone());
     
             index = increment_instruction_index(index, instructions.len());
             random_number_in_memory(&mut vp8.memory);
+
+            if let Some(Button::Keyboard(key)) = e.press_args() {
+                vp8.memory.set_mem_cell_value(0xff, key as u8);
+            }
         }
     }
 
