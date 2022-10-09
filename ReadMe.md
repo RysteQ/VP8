@@ -23,9 +23,9 @@ The memory map is simple, the first 256 bytes (\$0000 - \$00FF) is the zero page
 
 ![Memory map](/misc/memory%20map.png)
 
-🟥 **(\$0000 - \$00FF)** Zero page
-🟨 **(\$01FF - \$40FF)** Screen memory
-🟩 **(\$4100 - \$FFFF)** Free memory
+🟥 **(\$0000 - \$00FF)** Zero page <br>
+🟨 **(\$01FF - \$40FF)** Screen memory <br>
+🟩 **(\$4100 - \$FFFF)** Free memory <br>
 
 * The stack is not mentioned yet since I will do some minor changes to it later
 
