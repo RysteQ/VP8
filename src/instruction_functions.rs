@@ -230,11 +230,19 @@ pub fn dec(address: u16, addressing_mode: AddressingMode, registers: system::Reg
 }
 
 pub fn dex(registers: &mut system::Registers) {
-    registers.set_x(registers.get_x() - 1);
+    if registers.get_x() == 0 {
+        registers.set_x(255);
+    } else {
+        registers.set_x(registers.get_x() - 1);
+    }
 }
 
 pub fn dey(registers: &mut system::Registers) {
-    registers.set_y(registers.get_y() - 1);
+    if registers.get_x() == 0 {
+        registers.set_x(255);
+    } else {
+        registers.set_x(registers.get_x() - 1);
+    }
 }
 
 pub fn inc(address: u16, addressing_mode: AddressingMode, registers: system::Registers, memory: &mut system::Memory) {
@@ -247,11 +255,19 @@ pub fn inc(address: u16, addressing_mode: AddressingMode, registers: system::Reg
 }
 
 pub fn inx(registers: &mut system::Registers) {
-    registers.set_x(registers.get_x() + 1);
+    if registers.get_x() as u16 + 1 != 256 {
+        registers.set_x(registers.get_x() + 1);
+    } else {
+        registers.set_x(0);
+    }
 }
 
 pub fn iny(registers: &mut system::Registers) {
-    registers.set_y(registers.get_y() + 1);
+    if registers.get_y() as u16 + 1 != 256 {
+        registers.set_y(registers.get_y() + 1);
+    } else {
+        registers.set_y(0);
+    }
 }
 
 pub fn eor(address: u16, addressing_mode: AddressingMode, memory: system::Memory, registers: &mut system::Registers) {
