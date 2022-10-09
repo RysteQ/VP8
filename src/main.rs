@@ -16,7 +16,7 @@ fn main() {
     }
 
     let _file_data_lines: Vec<String> = read_file::read_file(arguments[1].to_string());
-    let _command_data: Vec<analyze_code::analyzer::Instruction> = analyze_code::analyzer::get_instructions(_file_data_lines.clone());
+    let _command_data: Vec<analyze_code::Instruction> = analyze_code::get_instructions(_file_data_lines.clone());
 
     if verifier::verify_data(_command_data.clone()) {
         emulator::emulator::start_emulator(_command_data);

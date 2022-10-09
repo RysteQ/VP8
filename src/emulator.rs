@@ -1,8 +1,8 @@
 pub mod emulator {
-    use crate::analyze_code::analyzer::AddressingMode;
+    use crate::analyze_code::AddressingMode;
     use crate::system::system;
-    use crate::window::window::Window;
-    use crate::{analyze_code::analyzer::{Instruction, Opcode}, instruction_functions::instructions};
+    use crate::window::Window;
+    use crate::{analyze_code::{Instruction, Opcode}, instruction_functions as instruction};
     use rand::Rng;
 
     struct Vp8System {
@@ -30,55 +30,55 @@ pub mod emulator {
             let label_name: String = instructions[index].label_name.clone();
             
             match instructions[index].opcode {
-                Opcode::ADC => instructions::adc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::AND => instructions::and(address, addressing_mode, &mut vp8.registers, vp8.memory),
-                Opcode::ASL => instructions::asl(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, &mut vp8.memory),
-                Opcode::BIT => instructions::bit(address, addressing_mode, &mut vp8.flags, vp8.memory),
-                Opcode::BCC => index = instructions::bcc(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BCS => index = instructions::bcs(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BEQ => index = instructions::beq(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BMI => index = instructions::bmi(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BNE => index = instructions::bne(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BPL => index = instructions::bpl(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BVC => index = instructions::bvc(index, vp8.flags, label_name, labels.clone()),
-                Opcode::BVS => index = instructions::bvs(index, vp8.flags, label_name, labels.clone()),
-                Opcode::CLC => instructions::clc(&mut vp8.flags),
-                Opcode::CLD => instructions::cld(&mut vp8.flags),
-                Opcode::CLI => instructions::cli(&mut vp8.flags),
-                Opcode::CLV => instructions::clv(&mut vp8.flags),
-                Opcode::CMP => instructions::cmp(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::CPX => instructions::cpx(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::CPY => instructions::cpy(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::DEC => instructions::dec(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::DEX => instructions::dex(&mut vp8.registers),
-                Opcode::DEY => instructions::dey(&mut vp8.registers),
-                Opcode::EOR => instructions::eor(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::INC => instructions::inc(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::INX => instructions::inx(&mut vp8.registers),
-                Opcode::INY => instructions::iny(&mut vp8.registers),
-                Opcode::JMP => index = instructions::jmp(instructions[index].label_name.clone(), labels.clone()),
-                Opcode::LDA => instructions::lda(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::LDX => instructions::ldx(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::LDY => instructions::ldy(address, addressing_mode, vp8.memory, &mut vp8.registers),
-                Opcode::LSR => instructions::lsr(address, addressing_mode, &mut vp8.memory, &mut vp8.registers),
-                Opcode::ORA => instructions::ora(address, addressing_mode, &mut vp8.registers, vp8.memory),
-                Opcode::PLA => instructions::pla(&mut vp8.registers, &mut vp8.memory),
-                Opcode::PHA => instructions::pha(vp8.registers, &mut vp8.memory),
-                Opcode::ROL => instructions::rol(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
-                Opcode::ROR => instructions::ror(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
-                Opcode::SBC => instructions::sbc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
-                Opcode::SEC => instructions::sec(&mut vp8.flags),
-                Opcode::SED => instructions::sed(&mut vp8.flags),
-                Opcode::SEI => instructions::sei(&mut vp8.flags),
-                Opcode::STA => instructions::sta(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::STX => instructions::stx(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::STY => instructions::sty(address, addressing_mode, vp8.registers, &mut vp8.memory),
-                Opcode::TAX => instructions::tax(&mut vp8.registers),
-                Opcode::TAY => instructions::tay(&mut vp8.registers),
-                Opcode::TSX => instructions::tsx(&mut vp8.registers),
-                Opcode::TXA => instructions::txa(&mut vp8.registers),
-                Opcode::TXS => instructions::txs(&mut vp8.registers),
-                Opcode::TYA => instructions::tya(&mut vp8.registers),
+                Opcode::ADC => instruction::adc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::AND => instruction::and(address, addressing_mode, &mut vp8.registers, vp8.memory),
+                Opcode::ASL => instruction::asl(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, &mut vp8.memory),
+                Opcode::BIT => instruction::bit(address, addressing_mode, &mut vp8.flags, vp8.memory),
+                Opcode::BCC => index = instruction::bcc(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BCS => index = instruction::bcs(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BEQ => index = instruction::beq(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BMI => index = instruction::bmi(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BNE => index = instruction::bne(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BPL => index = instruction::bpl(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BVC => index = instruction::bvc(index, vp8.flags, label_name, labels.clone()),
+                Opcode::BVS => index = instruction::bvs(index, vp8.flags, label_name, labels.clone()),
+                Opcode::CLC => instruction::clc(&mut vp8.flags),
+                Opcode::CLD => instruction::cld(&mut vp8.flags),
+                Opcode::CLI => instruction::cli(&mut vp8.flags),
+                Opcode::CLV => instruction::clv(&mut vp8.flags),
+                Opcode::CMP => instruction::cmp(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::CPX => instruction::cpx(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::CPY => instruction::cpy(address, addressing_mode, vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::DEC => instruction::dec(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::DEX => instruction::dex(&mut vp8.registers),
+                Opcode::DEY => instruction::dey(&mut vp8.registers),
+                Opcode::EOR => instruction::eor(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::INC => instruction::inc(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::INX => instruction::inx(&mut vp8.registers),
+                Opcode::INY => instruction::iny(&mut vp8.registers),
+                Opcode::JMP => index = instruction::jmp(instructions[index].label_name.clone(), labels.clone()),
+                Opcode::LDA => instruction::lda(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::LDX => instruction::ldx(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::LDY => instruction::ldy(address, addressing_mode, vp8.memory, &mut vp8.registers),
+                Opcode::LSR => instruction::lsr(address, addressing_mode, &mut vp8.memory, &mut vp8.registers),
+                Opcode::ORA => instruction::ora(address, addressing_mode, &mut vp8.registers, vp8.memory),
+                Opcode::PLA => instruction::pla(&mut vp8.registers, &mut vp8.memory),
+                Opcode::PHA => instruction::pha(vp8.registers, &mut vp8.memory),
+                Opcode::ROL => instruction::rol(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
+                Opcode::ROR => instruction::ror(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
+                Opcode::SBC => instruction::sbc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
+                Opcode::SEC => instruction::sec(&mut vp8.flags),
+                Opcode::SED => instruction::sed(&mut vp8.flags),
+                Opcode::SEI => instruction::sei(&mut vp8.flags),
+                Opcode::STA => instruction::sta(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::STX => instruction::stx(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::STY => instruction::sty(address, addressing_mode, vp8.registers, &mut vp8.memory),
+                Opcode::TAX => instruction::tax(&mut vp8.registers),
+                Opcode::TAY => instruction::tay(&mut vp8.registers),
+                Opcode::TSX => instruction::tsx(&mut vp8.registers),
+                Opcode::TXA => instruction::txa(&mut vp8.registers),
+                Opcode::TXS => instruction::txs(&mut vp8.registers),
+                Opcode::TYA => instruction::tya(&mut vp8.registers),
 
                 Opcode::BRK => index -= 1,
 
@@ -87,7 +87,7 @@ pub mod emulator {
                 
                 Opcode::JSR => {
                     routines.push(index);
-                    index = instructions::jmp(instructions[index].label_name.clone(), labels.clone());
+                    index = instruction::jmp(instructions[index].label_name.clone(), labels.clone());
                 },
 
                 Opcode::RTS => {

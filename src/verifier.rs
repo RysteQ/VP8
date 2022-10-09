@@ -1,4 +1,4 @@
-use crate::analyze_code::analyzer::{Instruction, Opcode, AddressingMode};
+use crate::analyze_code::{Instruction, Opcode, AddressingMode};
 
 pub fn verify_data(instructions: Vec<Instruction>) -> bool {
     let _only_implied_mode: [Opcode; 22] = [
