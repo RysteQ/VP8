@@ -1,4 +1,4 @@
-use piston_window::{self, Event, clear, rectangle, PistonWindow, WindowSettings};
+use piston_window::{self, Event, clear, rectangle, PistonWindow, WindowSettings, EventLoop};
 
 macro_rules! pixel_coordinates {
     ($x: expr, $y: expr) => {
@@ -19,10 +19,19 @@ pub struct Window {
 
 impl Window {
     pub fn init() -> Window {
-        Window {
-            window: WindowSettings::new("Hello World!", [512; 2]).build().unwrap(),
+        let mut app_window: PistonWindow = WindowSettings::new("Hello World!", [512; 2])
+            .exit_on_esc(true)
+            .resizable(false)
+            .build().unwrap();
+            
+        app_window.set_bench_mode(true);
+
+        let to_return: Window = Window {
+            window: app_window,
             data_to_render: [0; 16384]
-        }
+        };
+
+        return to_return;
     }
 
     pub fn set_screen_memory_data(&mut self, data: [u8; 16384]) {

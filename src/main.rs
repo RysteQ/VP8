@@ -1,3 +1,5 @@
+use std::env::args;
+
 mod read_file;
 mod analyze_code;
 mod emulator;
@@ -8,7 +10,8 @@ mod window;
 
 fn main() {
     // Change this line if you want to run this for obvious reasons
-    let arguments: Vec<String> = vec!["ignore_this".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];//args().collect::<Vec<String>>();
+    // let arguments: Vec<String> = vec!["ignore_this".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];
+    let arguments: Vec<String> = args().collect::<Vec<String>>();
 
     if arguments.len() != 2 {
         println!("Please input a path to the file");
