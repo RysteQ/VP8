@@ -19,11 +19,13 @@ pub struct Window {
 
 impl Window {
     pub fn init() -> Window {
-        let mut app_window: PistonWindow = WindowSettings::new("Hello World!", [512; 2])
+        let mut app_window: PistonWindow = WindowSettings::new("Virtual Processor 8", [512; 2])
             .exit_on_esc(true)
             .resizable(false)
             .build().unwrap();
             
+        // I will be honest with you, this does not work (although I am not the first one with such problems) and that's the reason of
+        // the DRW command, just to lessen the burden from this very slow program
         app_window.set_bench_mode(true);
 
         let to_return: Window = Window {
