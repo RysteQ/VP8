@@ -9,7 +9,6 @@ mod system;
 mod window;
 
 fn main() {
-    // Change this line if you want to run this for obvious reasons
     // let arguments: Vec<String> = vec!["ignore_this".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];
     let arguments: Vec<String> = args().collect::<Vec<String>>();
 
@@ -17,10 +16,10 @@ fn main() {
         println!("Please input a path to the file");
         std::process::exit(-1);
     }
-
+    
     let _file_data_lines: Vec<String> = read_file::read_file(arguments[1].to_string());
     let _command_data: Vec<analyze_code::Instruction> = analyze_code::get_instructions(_file_data_lines.clone());
-
+    
     if verifier::verify_data(_command_data.clone()) {
         emulator::start_emulator(_command_data);
     }

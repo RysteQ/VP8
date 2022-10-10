@@ -2,7 +2,6 @@ use crate::analyze_code::AddressingMode;
 use crate::system::system;
 use crate::window::Window;
 use crate::{analyze_code::{Instruction, Opcode}, instruction_functions as instruction};
-use piston_window::{PressEvent, Button};
 use rand::Rng;
 
 macro_rules! increment_instruction_index {
@@ -35,23 +34,40 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     let mut index: usize = 0;
 
     while let Some(e) = game_window.get_window_next() {
-        let address: u16 = instructions[index].value;
-        let addressing_mode: AddressingMode = instructions[index].addressing_mode;
-        let label_name: String = instructions[index].label_name.clone();
-        
-        match instructions[index].opcode {
+        execute_code(&instructions, &mut index, &mut vp8, labels.clone(), &mut routines);
+
+        game_window.set_screen_memory_data(vp8.memory.get_screen_memory());
+        game_window.update(e.clone());
+
+        index = increment_instruction_index!(index, instructions.len());
+
+        /* TODO: Make another thread for this later
+        if let Some(Button::Keyboard(key)) = e.press_args() {
+            vp8.memory.set_mem_cell_value(0xff, key as u8);
+        }
+        */
+    }
+}
+
+fn execute_code(instructions: &Vec<Instruction>, index: &mut usize, vp8: &mut Vp8System, labels: Vec<(String, usize)>, routines: &mut Vec<usize>) {
+    loop {
+        let address: u16 = instructions[*index].value;
+        let addressing_mode: AddressingMode = instructions[*index].addressing_mode;
+        let label_name: String = instructions[*index].label_name.clone();
+
+        match instructions[*index].opcode {
             Opcode::ADC => instruction::adc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),
             Opcode::AND => instruction::and(address, addressing_mode, &mut vp8.registers, vp8.memory),
             Opcode::ASL => instruction::asl(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, &mut vp8.memory),
             Opcode::BIT => instruction::bit(address, addressing_mode, &mut vp8.flags, vp8.memory),
-            Opcode::BCC => index = instruction::bcc(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BCS => index = instruction::bcs(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BEQ => index = instruction::beq(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BMI => index = instruction::bmi(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BNE => index = instruction::bne(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BPL => index = instruction::bpl(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BVC => index = instruction::bvc(index, vp8.flags, label_name, labels.clone()),
-            Opcode::BVS => index = instruction::bvs(index, vp8.flags, label_name, labels.clone()),
+            Opcode::BCC => *index = instruction::bcc(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BCS => *index = instruction::bcs(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BEQ => *index = instruction::beq(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BMI => *index = instruction::bmi(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BNE => *index = instruction::bne(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BPL => *index = instruction::bpl(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BVC => *index = instruction::bvc(*index, vp8.flags, label_name.clone(), labels.clone()),
+            Opcode::BVS => *index = instruction::bvs(*index, vp8.flags, label_name.clone(), labels.clone()),
             Opcode::CLC => instruction::clc(&mut vp8.flags),
             Opcode::CLD => instruction::cld(&mut vp8.flags),
             Opcode::CLI => instruction::cli(&mut vp8.flags),
@@ -66,7 +82,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::INC => instruction::inc(address, addressing_mode, vp8.registers, &mut vp8.memory),
             Opcode::INX => instruction::inx(&mut vp8.registers),
             Opcode::INY => instruction::iny(&mut vp8.registers),
-            Opcode::JMP => index = instruction::jmp(instructions[index].label_name.clone(), labels.clone()),
+            Opcode::JMP => *index = instruction::jmp(instructions[*index].label_name.clone(), labels.clone()),
             Opcode::LDA => instruction::lda(address, addressing_mode, vp8.memory, &mut vp8.registers),
             Opcode::LDX => instruction::ldx(address, addressing_mode, vp8.memory, &mut vp8.registers),
             Opcode::LDY => instruction::ldy(address, addressing_mode, vp8.memory, &mut vp8.registers),
@@ -89,34 +105,28 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::TXA => instruction::txa(&mut vp8.registers),
             Opcode::TXS => instruction::txs(&mut vp8.registers),
             Opcode::TYA => instruction::tya(&mut vp8.registers),
-            Opcode::BRK => index -= 1,
-            Opcode::LABEL => { },
-            Opcode::NOP => { },
-            Opcode::DRW => { }, // TODO
+            Opcode::BRK => *index -= 1,
+            
+            Opcode::DRW => break,
             
             Opcode::JSR => {
-                routines.push(index);
-                index = instruction::jmp(instructions[index].label_name.clone(), labels.clone());
+                routines.push(*index);
+                *index = instruction::jmp(instructions[*index].label_name.clone(), labels.clone());
             },
 
             Opcode::RTS => {
                 if routines.len() == 0 {
-                    panic!("No routine ro return from, instruction {:?} at {index}", instructions[index]);
+                    panic!("No routine ro return from, instruction {:?} at {}", instructions[*index], *index);
                 }
 
-                index = routines.pop().unwrap();
-            }
+                *index = routines.pop().unwrap();
+            },
+
+            _ => { }
         }
-
-        game_window.set_screen_memory_data(vp8.memory.get_screen_memory());
-        game_window.update(e.clone());
-
-        index = increment_instruction_index!(index, instructions.len());
+        
+        *index = increment_instruction_index!(*index, instructions.len());
         random_number_in_memory(&mut vp8.memory);
-
-        if let Some(Button::Keyboard(key)) = e.press_args() {
-            vp8.memory.set_mem_cell_value(0xff, key as u8);
-        }
     }
 }
 
