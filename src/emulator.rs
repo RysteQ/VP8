@@ -90,6 +90,8 @@ fn execute_code(instructions: &Vec<Instruction>, index: &mut usize, vp8: &mut Vp
             Opcode::ORA => instruction::ora(address, addressing_mode, &mut vp8.registers, vp8.memory),
             Opcode::PLA => instruction::pla(&mut vp8.registers, &mut vp8.memory),
             Opcode::PHA => instruction::pha(vp8.registers, &mut vp8.memory),
+            Opcode::PHP => instruction::php(vp8.flags, &mut vp8.memory),
+            Opcode::PLP => instruction::plp(&mut vp8.flags, &mut vp8.memory),
             Opcode::ROL => instruction::rol(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
             Opcode::ROR => instruction::ror(address, addressing_mode, &mut vp8.registers, vp8.memory, &mut vp8.flags),
             Opcode::SBC => instruction::sbc(address, addressing_mode, &mut vp8.registers, &mut vp8.flags, vp8.memory),

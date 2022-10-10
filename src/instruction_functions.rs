@@ -3,6 +3,16 @@ use std::cmp::Ordering;
 use crate::analyze_code::AddressingMode;
 use crate::system::system;
 
+macro_rules! check_flag_status {
+    ($flag_status: expr, $value_to_add: expr) => {
+        if $flag_status {
+            0
+        } else {
+            $value_to_add
+        }
+    };
+}
+
 pub fn adc(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, flags: &mut system::Flags, memory: system::Memory) {
     let mut result: u16 = registers.get_acc() as u16;
     
@@ -405,7 +415,7 @@ pub fn pha(registers: system::Registers, memory: &mut system::Memory) {
     }
 
     memory.set_mem_cell_value(memory.get_stack_pointer() as usize, registers.get_acc());
-    memory.decrement_stack_pointer();
+    memory.increment_stack_pointer();
 }
 
 pub fn pla(registers: &mut system::Registers, memory: &mut system::Memory) {
@@ -414,7 +424,32 @@ pub fn pla(registers: &mut system::Registers, memory: &mut system::Memory) {
     }
 
     registers.set_acc(memory.get_mem_cell_value(memory.get_stack_pointer() as usize));
+    memory.decrement_stack_pointer();
+}
+
+pub fn php(flags: system::Flags, memory: &mut system::Memory) {
+    if memory.get_stack_pointer() + 0x4100 == 0x41ff {
+        panic!("Stack maximum limit reached");   
+    }
+
+    let mut to_push: u8 = 0;
+
+    to_push += check_flag_status!(flags.get_carry_flag(), 0b00000001);
+    to_push += check_flag_status!(flags.get_zerro_flag(), 0b00000010);
+    to_push += check_flag_status!(flags.get_overflow_flag(), 0b00000100);
+    to_push += check_flag_status!(flags.get_negative_flag(), 0b00001000);
+
+    memory.set_mem_cell_value(memory.get_stack_pointer() as usize, to_push);
     memory.increment_stack_pointer();
+}
+
+pub fn plp(flags: &mut system::Flags, memory: &mut system::Memory) {
+    let poped_value: u8 = memory.get_mem_cell_value(memory.get_stack_pointer() as usize);
+
+    flags.set_carry_flag((poped_value & 0b00000001) != 0);
+    flags.set_zerro_flag((poped_value & 0b00000010) != 0);
+    flags.set_overflow_flag((poped_value & 0b00000100) != 0);
+    flags.set_negative_flag((poped_value & 0b00001000) != 0);
 }
 
 pub fn ora(address: u16, addressing_mode: AddressingMode, registers: &mut system::Registers, memory: system::Memory) {

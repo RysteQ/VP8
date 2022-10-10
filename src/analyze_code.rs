@@ -7,9 +7,9 @@ pub enum Opcode {
     BNE, BPL, BRK, BVC, BVS, CLC, CLD, CLI,
     CLV, CMP, CPX, CPY, DEC, DEX, DEY, EOR,
     INC, INX, INY, JMP, JSR, LDA, LDX, LDY,
-    LSR, NOP, ORA, PHA, PLA, ROL, ROR, RTS, 
-    SBC, SEC, SED, SEI, STA, STX, STY, TAX, 
-    TAY, TSX, TXA, TXS, TYA,
+    LSR, NOP, ORA, PHA, PLA, PHP, PLP, ROL, 
+    ROR, RTS, SBC, SEC, SED, SEI, STA, STX, 
+    STY, TAX, TAY, TSX, TXA, TXS, TYA,
 
     LABEL, DRW
 }
