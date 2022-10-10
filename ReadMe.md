@@ -11,8 +11,7 @@ VP8 is a virtual 8 bit computer that runs 6502 assembly created in rust.
 
 ## Features
 
-This project has two very important features. 
-
+This project has two very important featur
 The first main feature this project has is a fully working screen that is 128 tall by 128 wide with 16 colours although you can modify it to go up to 256 colours if you so desire.
 
 The second feature is that the program is not saved in the 64 kilobytes of virtual RAM, the program memory is seperate from the RAM so your code can be as big as you want.
@@ -25,7 +24,8 @@ The memory map is simple, the first 256 bytes (\$0000 - \$00FF) is the zero page
 
 🟥 **(\$0000 - \$00FF)** Zero page <br>
 🟨 **(\$01FF - \$40FF)** Screen memory <br>
-🟩 **(\$4100 - \$FFFF)** Free memory <br>
+🟦 **(\$4100 - \$41FF)** Stack memory <br>
+🟩 **(\$4200 - \$FFFF)** Free memory <br>
 
 * The stack is not mentioned yet since I will do some minor changes to it later
 

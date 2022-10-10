@@ -2,6 +2,7 @@
 name = "vp8"
 version = "1.2.2"
 edition = "2021"
+authors = ["RysteQ", "majorsopa"]
 rust-version = "1.63.0"
 description = "A virtual computer that runs in 6502 assembly written in pure rust"
 repository = "https://github.com/RysteQ/VP8"
