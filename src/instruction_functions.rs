@@ -400,8 +400,8 @@ pub fn lsr(address: u16, addressing_mode: AddressingMode, memory: &mut system::M
 }
 
 pub fn pha(registers: system::Registers, memory: &mut system::Memory) {
-    if memory.get_stack_pointer() == 255 {
-        panic!("Stack limit reached");
+    if memory.get_stack_pointer() + 0x4100 == 0x4100 {
+        panic!("Stack minimum limit reached");
     }
 
     memory.set_mem_cell_value(memory.get_stack_pointer() as usize, registers.get_acc());
@@ -409,8 +409,8 @@ pub fn pha(registers: system::Registers, memory: &mut system::Memory) {
 }
 
 pub fn pla(registers: &mut system::Registers, memory: &mut system::Memory) {
-    if memory.get_stack_pointer() == 0x01ff {
-        panic!("Stack limit reached");   
+    if memory.get_stack_pointer() + 0x4100 == 0x41ff {
+        panic!("Stack maximum limit reached");   
     }
 
     registers.set_acc(memory.get_mem_cell_value(memory.get_stack_pointer() as usize));
