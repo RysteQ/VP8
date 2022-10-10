@@ -92,6 +92,7 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
             Opcode::BRK => index -= 1,
             Opcode::LABEL => { },
             Opcode::NOP => { },
+            Opcode::DRW => { }, // TODO
             
             Opcode::JSR => {
                 routines.push(index);

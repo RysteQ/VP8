@@ -11,7 +11,7 @@ pub enum Opcode {
     SBC, SEC, SED, SEI, STA, STX, STY, TAX, 
     TAY, TSX, TXA, TXS, TYA,
 
-    LABEL,
+    LABEL, DRW
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Display)]
