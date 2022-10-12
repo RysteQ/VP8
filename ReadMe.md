@@ -43,8 +43,8 @@ After you download the source code compile it and then run the following command
 
 My current TODO list is the following
 
-1) Get the GUI to work properly
-2) Add full flag functionality and PHP / PLP instructions
+1) ~~Get the GUI to work properly~~
+2) ~~Add full flag functionality and PHP / PLP instructions~~
 3) Make the Readme.md look better with images / GIFs and stuff like that
 4) Add an examples folder with some very simple programs
 5) Test the program for any hidden bugs that I may very well have missed
