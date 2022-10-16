@@ -33,19 +33,13 @@ pub fn start_emulator(instructions: Vec<Instruction>) {
     let mut routines: Vec<usize> = vec![];
     let mut index: usize = 0;
 
-    while let Some(e) = game_window.get_window_next() {
+    while let Some(event) = game_window.get_window_next() {
         execute_code(&instructions, &mut index, &mut vp8, labels.clone(), &mut routines);
 
         game_window.set_screen_memory_data(vp8.memory.get_screen_memory());
-        game_window.update(e.clone());
+        game_window.update(event);
 
         index = increment_instruction_index!(index, instructions.len());
-
-        /* TODO: Make another thread for this later
-        if let Some(Button::Keyboard(key)) = e.press_args() {
-            vp8.memory.set_mem_cell_value(0xff, key as u8);
-        }
-        */
     }
 }
 
