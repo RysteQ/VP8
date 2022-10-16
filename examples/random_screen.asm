@@ -1,6 +1,6 @@
 LDA #$00
 STA $00
-LDA #$02
+LDA #$01
 STA $01
 
 loop:
@@ -11,8 +11,10 @@ loop:
     BNE loop
     
     INX
-    CPX #$04
+    CPX #$40
     BNE increase_offset
+    
+    DRW
     BRK
 
 increase_offset:

@@ -167,7 +167,7 @@ fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {
             AddressingMode::ZeroPage | AddressingMode::Absolute => &parameters[1..],
             AddressingMode::ZeroPageX | AddressingMode::ZeroPageY | AddressingMode::AbsoluteX | AddressingMode::AbsoluteY => &parameters[1..].split(&",".to_string()).collect::<Vec<&str>>()[0],
             AddressingMode::IndirectX => &parameters[2..].split(&",".to_string()).collect::<Vec<&str>>()[0],
-            AddressingMode::IndirectY => &parameters[1..].split(&")".to_string()).collect::<Vec<&str>>()[0],
+            AddressingMode::IndirectY => &parameters[2..].split(&")".to_string()).collect::<Vec<&str>>()[0],
             
             _ => "FFFF"
         }
