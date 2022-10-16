@@ -24,7 +24,7 @@ You may notice that I do not mention anything about where the program is saved o
 
 ## Diferences
 
-There are a couple of creative liberties I took because I am new to rust. The first thing is that there is no input to this emulator. The second thing is that due to my inability to understand [piston]() I added an extra command to update the screen, that command being ```DRW```. Also the flags are not exactly implemented correctly.
+There are a couple of creative liberties I took because I am new to rust. The first thing is that there is no input to this emulator. The second thing is that due to my inability to understand [piston](https://github.com/PistonDevelopers/piston) I added an extra command to update the screen, that command being ```DRW```. Also the flags are not exactly implemented correctly.
 
 ## How to run
 
