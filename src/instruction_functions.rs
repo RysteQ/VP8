@@ -87,99 +87,35 @@ pub fn bit(address: u16, addressing_mode: AddressingMode, flags: &mut system::Fl
 }
 
 pub fn bpl(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_negative_flag(), false, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_negative_flag(true);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_negative_flag(), false, label_name, labels, current_index)
 }
 
 pub fn bmi(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_negative_flag(), true, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_negative_flag(false);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_negative_flag(), true, label_name, labels, current_index)
 }
 
 pub fn bvc(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_overflow_flag(), false, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_overflow_flag(true);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_overflow_flag(), false, label_name, labels, current_index)
 }
 
 pub fn bvs(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_overflow_flag(), true, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_overflow_flag(false);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_overflow_flag(), true, label_name, labels, current_index)
 }
 
 pub fn bcc(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_carry_flag(), false, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_carry_flag(true);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_carry_flag(), false, label_name, labels, current_index)
 }
 
 pub fn bcs(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_carry_flag(), true, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_carry_flag(false);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_carry_flag(), true, label_name, labels, current_index)
 }
 
 pub fn bne(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_zerro_flag(), false, label_name, labels, current_index);
-    
-    if to_return != current_index {
-        flags.set_zerro_flag(true);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_zerro_flag(), false, label_name, labels, current_index)
 }
 
 pub fn beq(current_index: usize, flags: &mut system::Flags, label_name: String, labels: Vec<(String, usize)>) -> usize {
-    let to_return: usize = branch(flags.get_zerro_flag(), true, label_name, labels, current_index);
-
-    if to_return != current_index {
-        flags.set_zerro_flag(false);
-
-        return to_return
-    }
-
-    to_return
+    branch(flags.get_zerro_flag(), true, label_name, labels, current_index)
 }
 
 pub fn clc(flags: &mut system::Flags) {
@@ -554,6 +490,10 @@ fn branch(flag_to_check: bool, expected_value: bool, label_name: String, labels:
 
 fn compare(register_value: u8, expected_value: u8, flags: &mut system::Flags) {
     let order_value: Ordering = register_value.cmp(&expected_value);
+
+    flags.set_negative_flag(false);
+    flags.set_zerro_flag(false);
+    flags.set_carry_flag(false);
 
     match order_value {
         Ordering::Less => flags.set_negative_flag(false),
