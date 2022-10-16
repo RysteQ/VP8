@@ -11,7 +11,8 @@ VP8 is a virtual 8 bit computer that runs 6502 assembly created in rust.
 
 ## Features
 
-This project has two very important featur
+This project has two very important features
+
 The first main feature this project has is a fully working screen that is 128 tall by 128 wide with 16 colours although you can modify it to go up to 256 colours if you so desire.
 
 The second feature is that the program is not saved in the 64 kilobytes of virtual RAM, the program memory is seperate from the RAM so your code can be as big as you want.
@@ -43,13 +44,8 @@ After you download the source code compile it and then run the following command
 
 My current TODO list is the following
 
-1) ~~Get the GUI to work properly~~
-2) ~~Add full flag functionality and PHP / PLP instructions~~
-3) Make the Readme.md look better with images / GIFs and stuff like that
-4) Add an examples folder with some very simple programs
-5) Test the program for any hidden bugs that I may very well have missed
-
-It goes without saying that my other goals that I do not have in my TODO list because I find it quite obvious is to increase perfomance but most importantly increase code readability even if it hurts perfomance a little bit.
+1) Make the Readme.md look better with images / GIFs and stuff like that
+2) Add an examples folder with some very simple programs
 
 ## Ways to contribute
 
