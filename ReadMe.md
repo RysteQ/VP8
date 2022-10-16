@@ -3,19 +3,11 @@
 VP8 is a virtual 8 bit computer that runs 6502 assembly created in rust.
 
 **Table of contents**
-- **[Features](#features)**
 - **[Memory map](#memory-map)**
+- **[Differences](#differences)**
 - **[How to run](#how-to-run)**
 - **[Current TODO list](#todo)**
 - **[Ways to contribute](#ways-to-contribute)**
-
-## Features
-
-This project has two very important features
-
-The first main feature this project has is a fully working screen that is 128 tall by 128 wide with 16 colours although you can modify it to go up to 256 colours if you so desire.
-
-The second feature is that the program is not saved in the 64 kilobytes of virtual RAM, the program memory is seperate from the RAM so your code can be as big as you want.
 
 ## Memory map
 
@@ -28,7 +20,11 @@ The memory map is simple, the first 256 bytes (\$0000 - \$00FF) is the zero page
 🟦 **(\$4100 - \$41FF)** Stack memory <br>
 🟩 **(\$4200 - \$FFFF)** Free memory <br>
 
-* The stack is not mentioned yet since I will do some minor changes to it later
+You may notice that I do not mention anything about where the program is saved on memory, that's because the program is not loaded in the virtual RAM and it's seperate from it. This way your program can be as big as you want it while making full use of the 64Kb or RAM.
+
+## Diferences
+
+There are a couple of creative liberties I took because I am new to rust. The first thing is that there is no input to this emulator. The second thing is that due to my inability to understand [piston]() I added an extra command to update the screen, that command being ```DRW```. Also the flags are not exactly implemented correctly.
 
 ## How to run
 
@@ -37,8 +33,6 @@ After you download the source code compile it and then run the following command
 ```bash
 ./vp8 input_file.extension
 ```
-
-* *I will expand this in the future as more features get added in as a way to change the max fps the emulator will run at, a hexdump functionality (the chances of that are really slim) and a debug mode so it will run a single instruction (or multiple) each time you press a button.*
 
 ## TODO
 

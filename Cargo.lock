@@ -1779,7 +1779,7 @@ dependencies = [
 
 [[package]]
 name = "vp8"
-version = "1.4.7"
+version = "1.4.8"
 dependencies = [
  "parse-display",
  "piston_window",
