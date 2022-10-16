@@ -9,7 +9,6 @@ mod system;
 mod window;
 
 fn main() {
-    // let arguments: Vec<String> = vec!["ignore_this".to_string(), "/home/rysteq/Desktop/Programs/Rust/VP8/test.asm".to_string()];
     let arguments: Vec<String> = args().collect::<Vec<String>>();
 
     if arguments.len() != 2 {

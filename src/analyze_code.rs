@@ -1,6 +1,12 @@
 use parse_display::{Display, FromStr};
 use std::u16;
 
+macro_rules! remove_whitespaces {
+    ($to_remove: expr) => {
+        $to_remove.replace(" ", "")
+    };
+}
+
 #[derive(Debug, Clone, Copy, Display, FromStr, PartialEq, Eq)]
 pub enum Opcode {
     ADC, AND, ASL, BCC, BCS, BEQ, BIT, BMI,
@@ -81,9 +87,8 @@ fn get_opcode(opcode_to_analyze: &str, original_version: &str) -> Opcode {
     }
 }
 
-// TODO: Fix this junk once more
 fn get_addressing_mode(parameters_to_analyze: &str, opcode: Opcode) -> AddressingMode {
-    let to_analyze: String = remove_whitespaces(parameters_to_analyze);
+    let to_analyze: String = remove_whitespaces!(parameters_to_analyze);
 
     if to_analyze.is_empty() {
         return AddressingMode::Implied;
@@ -153,10 +158,6 @@ fn get_addressing_mode(parameters_to_analyze: &str, opcode: Opcode) -> Addressin
             panic!("Error in analyze_code.rs at get_addressing_mode, operand value = {parameters_to_analyze}")
         }
     }
-}
-
-fn remove_whitespaces(input: &str) -> String {
-    input.replace(" ", "")
 }
 
 fn get_operand_value(parameters: &str, addressing_mode: AddressingMode) -> u16 {

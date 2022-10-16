@@ -1,6 +1,6 @@
 [package]
 name = "vp8"
-version = "1.4.3"
+version = "1.4.4"
 edition = "2021"
 authors = ["RysteQ", "majorsopa"]
 rust-version = "1.63.0"
