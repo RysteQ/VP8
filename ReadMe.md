@@ -6,7 +6,6 @@ VP8 is a virtual 8 bit computer that runs 6502 assembly created in rust.
 - **[Memory map](#memory-map)**
 - **[Differences](#differences)**
 - **[How to run](#how-to-run)**
-- **[Current TODO list](#todo)**
 - **[Ways to contribute](#ways-to-contribute)**
 
 ## Memory map
@@ -33,13 +32,6 @@ After you download the source code compile it and then run the following command
 ```bash
 ./vp8 input_file.extension
 ```
-
-## TODO
-
-My current TODO list is the following
-
-1) Make the Readme.md look better with images / GIFs and stuff like that
-2) Add an examples folder with some very simple programs
 
 ## Ways to contribute
 
